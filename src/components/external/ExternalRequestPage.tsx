@@ -156,28 +156,28 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-slate-100/80">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-10">
-        <div className="max-w-3xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+      <header className="bg-white/80 backdrop-blur-md border-b border-slate-200/60 px-5 sm:px-8 py-4 sticky top-0 z-10">
+        <div className="max-w-2xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3 min-w-0">
             {view !== 'dashboard' && (
               <button
                 onClick={() => { setView('dashboard'); setSelectedTask(null) }}
-                className="p-1.5 hover:bg-gray-100 rounded-lg shrink-0"
+                className="p-2 hover:bg-slate-100 rounded-xl transition-colors shrink-0"
               >
-                <ArrowLeft className="w-5 h-5 text-gray-600" />
+                <ArrowLeft className="w-5 h-5 text-slate-500" />
               </button>
             )}
             <div className="min-w-0">
-              <h1 className="text-base sm:text-lg font-bold text-gray-900 truncate">{client.name}</h1>
-              <p className="text-xs text-gray-500">업무 요청</p>
+              <h1 className="text-base sm:text-lg font-bold text-slate-900 truncate">{client.name}</h1>
+              <p className="text-[11px] text-slate-400 font-medium">업무 요청 시스템</p>
             </div>
           </div>
           {view === 'list' && (
             <button
               onClick={() => setView('create')}
-              className="px-3 sm:px-4 py-2 bg-blue-500 text-white text-sm font-medium rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20 shrink-0"
+              className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20 shrink-0"
             >
               새 요청
             </button>
@@ -185,7 +185,7 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
         </div>
       </header>
 
-      <div className="max-w-3xl mx-auto p-4 sm:p-6">
+      <div className="max-w-2xl mx-auto px-5 sm:px-8 py-6 sm:py-8">
         {view === 'dashboard' && (
           <ExternalDashboard
             client={client}
@@ -219,7 +219,7 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
       {view === 'dashboard' && (
         <button
           onClick={() => setView('create')}
-          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-lg shadow-blue-500/30 hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center hover:scale-105 active:scale-95 z-20"
+          className="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl shadow-xl shadow-blue-500/30 hover:shadow-blue-500/40 hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center hover:scale-105 active:scale-95 z-20"
           title="새 요청"
         >
           <Plus className="w-6 h-6" />
@@ -292,36 +292,44 @@ function ExternalDashboard({ client, tasks, onViewAll, onSelectTask }: {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* My Request Summary */}
       <div>
-        <h3 className="text-[15px] font-semibold text-slate-700 mb-3">내 요청 현황</h3>
+        <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">내 요청 현황</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <div className="bg-amber-50 rounded-xl border border-amber-100 px-4 py-3 flex items-center gap-2.5">
-            <Clock className="w-4 h-4 text-amber-500 shrink-0" />
+          <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm px-4 py-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center shrink-0">
+              <Clock className="w-4 h-4 text-amber-600" />
+            </div>
             <div>
-              <p className="text-[11px] text-amber-600 font-medium">대기</p>
+              <p className="text-[11px] text-slate-400 font-medium">대기</p>
               <p className="text-xl font-bold text-slate-900">{pending}</p>
             </div>
           </div>
-          <div className="bg-blue-50 rounded-xl border border-blue-100 px-4 py-3 flex items-center gap-2.5">
-            <Loader2 className="w-4 h-4 text-blue-500 shrink-0" />
+          <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm px-4 py-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-blue-100 flex items-center justify-center shrink-0">
+              <Loader2 className="w-4 h-4 text-blue-600" />
+            </div>
             <div>
-              <p className="text-[11px] text-blue-600 font-medium">처리중</p>
+              <p className="text-[11px] text-slate-400 font-medium">처리중</p>
               <p className="text-xl font-bold text-slate-900">{processing}</p>
             </div>
           </div>
-          <div className="bg-emerald-50 rounded-xl border border-emerald-100 px-4 py-3 flex items-center gap-2.5">
-            <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+          <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm px-4 py-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0">
+              <CheckCircle className="w-4 h-4 text-emerald-600" />
+            </div>
             <div>
-              <p className="text-[11px] text-emerald-600 font-medium">완료</p>
+              <p className="text-[11px] text-slate-400 font-medium">완료</p>
               <p className="text-xl font-bold text-slate-900">{done}</p>
             </div>
           </div>
-          <div className="bg-red-50 rounded-xl border border-red-100 px-4 py-3 flex items-center gap-2.5">
-            <XCircle className="w-4 h-4 text-red-500 shrink-0" />
+          <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm px-4 py-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-red-100 flex items-center justify-center shrink-0">
+              <XCircle className="w-4 h-4 text-red-600" />
+            </div>
             <div>
-              <p className="text-[11px] text-red-600 font-medium">반려</p>
+              <p className="text-[11px] text-slate-400 font-medium">반려</p>
               <p className="text-xl font-bold text-slate-900">{cancelled}</p>
             </div>
           </div>
@@ -331,30 +339,30 @@ function ExternalDashboard({ client, tasks, onViewAll, onSelectTask }: {
       {/* Department Status - Traffic Lights */}
       {deptStats.length > 0 && (
         <div>
-          <h3 className="text-[15px] font-semibold text-slate-700 mb-3">부서별 처리 현황</h3>
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider mb-4">부서별 처리 현황</h3>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {deptStats.map(dept => {
               const light = statusConfig[dept.status]
               return (
-                <div key={dept.id} className={`rounded-xl border p-4 ${light.bg} transition-all`}>
-                  <div className="flex items-center gap-2.5 mb-3">
+                <div key={dept.id} className={`rounded-2xl border p-5 ${light.bg} transition-all shadow-sm`}>
+                  <div className="flex items-center gap-3 mb-4">
                     <div className={`w-3.5 h-3.5 rounded-full ${light.color} ring-4 ${light.ring} shrink-0`} />
                     <div className="flex items-center justify-between flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-slate-800 truncate">{dept.name}</p>
-                      <span className="text-[10px] font-medium text-slate-500 shrink-0 ml-2">{light.label}</span>
+                      <p className="text-[15px] font-semibold text-slate-800 truncate">{dept.name}</p>
+                      <span className="text-[10px] font-semibold text-slate-500 shrink-0 ml-2 bg-white/60 px-2 py-0.5 rounded-full">{light.label}</span>
                     </div>
                   </div>
 
                   {/* Progress bar */}
                   {dept.total > 0 && (
-                    <div className="flex items-center gap-0.5 h-2 rounded-full overflow-hidden bg-slate-200/60 mb-2.5">
+                    <div className="flex items-center gap-0.5 h-2.5 rounded-full overflow-hidden bg-white/50 mb-3">
                       {dept.done > 0 && <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(dept.done / dept.total) * 100}%` }} />}
                       {dept.processing > 0 && <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(dept.processing / dept.total) * 100}%` }} />}
                       {dept.pending > 0 && <div className="h-full bg-amber-400 rounded-full" style={{ width: `${(dept.pending / dept.total) * 100}%` }} />}
                     </div>
                   )}
 
-                  <div className="flex items-center gap-3 text-[11px]">
+                  <div className="flex items-center gap-4 text-[12px]">
                     <span className="text-amber-600 font-medium">대기 {dept.pending}</span>
                     <span className="text-blue-600 font-medium">처리 {dept.processing}</span>
                     <span className="text-emerald-600 font-medium">완료 {dept.done}</span>
@@ -369,41 +377,41 @@ function ExternalDashboard({ client, tasks, onViewAll, onSelectTask }: {
 
       {/* Recent Requests */}
       <div>
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="text-[15px] font-semibold text-slate-700">최근 요청</h3>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-slate-500 uppercase tracking-wider">최근 요청</h3>
           {tasks.length > 5 && (
-            <button onClick={onViewAll} className="text-xs text-blue-500 font-medium hover:text-blue-600">
+            <button onClick={onViewAll} className="text-xs text-blue-500 font-semibold hover:text-blue-600 transition-colors">
               전체보기 ({tasks.length})
             </button>
           )}
         </div>
 
         {recentTasks.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
-            <ClipboardList className="w-8 h-8 text-gray-300 mx-auto mb-2" />
-            <p className="text-sm text-gray-500">아직 요청한 업무가 없습니다.</p>
-            <p className="text-xs text-gray-400 mt-1">오른쪽 하단 + 버튼을 눌러 업무를 요청하세요.</p>
+          <div className="bg-white rounded-2xl border border-slate-200/60 shadow-sm p-10 text-center">
+            <ClipboardList className="w-10 h-10 text-slate-200 mx-auto mb-3" />
+            <p className="text-sm font-medium text-slate-500">아직 요청한 업무가 없습니다.</p>
+            <p className="text-xs text-slate-400 mt-1">오른쪽 하단 + 버튼을 눌러 업무를 요청하세요.</p>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-100">
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 divide-y divide-slate-100/80 overflow-hidden">
             {recentTasks.map(task => (
               <button
                 key={task.id}
                 onClick={() => onSelectTask(task)}
-                className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-3 active:bg-gray-100"
+                className="w-full text-left px-5 py-4 hover:bg-slate-50/80 transition-colors flex items-center gap-3 active:bg-slate-100/60"
               >
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">{task.title}</p>
-                  <div className="flex items-center gap-2 mt-1 flex-wrap">
-                    <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${STATUS_COLORS[task.status]}`}>
+                  <p className="text-sm font-medium text-slate-800 truncate">{task.title}</p>
+                  <div className="flex items-center gap-2 mt-1.5 flex-wrap">
+                    <span className={`px-2.5 py-0.5 text-[10px] font-semibold rounded-lg ${STATUS_COLORS[task.status]}`}>
                       {STATUS_LABELS[task.status]}
                     </span>
-                    <span className="text-[10px] text-gray-400">
+                    <span className="text-[10px] text-slate-400">
                       {new Date(task.created_at).toLocaleString('ko-KR')}
                     </span>
                   </div>
                 </div>
-                <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+                <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
               </button>
             ))}
           </div>
@@ -419,33 +427,34 @@ function ExternalTaskList({ tasks, onSelect }: {
 }) {
   if (tasks.length === 0) {
     return (
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-8 sm:p-12 text-center">
-        <p className="text-sm text-gray-500">아직 요청한 업무가 없습니다.</p>
-        <p className="text-xs text-gray-400 mt-1">새 요청 버튼을 눌러 업무를 요청하세요.</p>
+      <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-10 text-center">
+        <ClipboardList className="w-10 h-10 text-slate-200 mx-auto mb-3" />
+        <p className="text-sm font-medium text-slate-500">아직 요청한 업무가 없습니다.</p>
+        <p className="text-xs text-slate-400 mt-1">새 요청 버튼을 눌러 업무를 요청하세요.</p>
       </div>
     )
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-100">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 divide-y divide-slate-100/80 overflow-hidden">
       {tasks.map((task) => (
         <button
           key={task.id}
           onClick={() => onSelect(task)}
-          className="w-full text-left px-4 py-3.5 hover:bg-gray-50 transition-colors flex items-center gap-3 active:bg-gray-100"
+          className="w-full text-left px-5 py-4 hover:bg-slate-50/80 transition-colors flex items-center gap-3 active:bg-slate-100/60"
         >
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">{task.title}</p>
+            <p className="text-sm font-medium text-slate-800 truncate">{task.title}</p>
             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
-              <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${STATUS_COLORS[task.status]}`}>
+              <span className={`px-2.5 py-0.5 text-[10px] font-semibold rounded-lg ${STATUS_COLORS[task.status]}`}>
                 {STATUS_LABELS[task.status]}
               </span>
-              <span className="text-[10px] text-gray-400">
+              <span className="text-[10px] text-slate-400">
                 {new Date(task.created_at).toLocaleString('ko-KR')}
               </span>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+          <ChevronRight className="w-4 h-4 text-slate-300 shrink-0" />
         </button>
       ))}
     </div>
@@ -505,17 +514,17 @@ function ExternalTaskForm({ client, onSubmitted }: {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
-      <h2 className="text-base font-bold text-gray-900 mb-4 sm:mb-5">새 업무 요청</h2>
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 p-5 sm:p-7">
+      <h2 className="text-lg font-bold text-slate-900 mb-6">새 업무 요청</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {hasMultipleDepts && (
           <div>
-            <label className="block text-sm font-semibold text-gray-600 mb-1.5">업무처리 부서</label>
+            <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">업무처리 부서</label>
             <select
               value={targetDeptId}
               onChange={(e) => setTargetDeptId(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 text-sm bg-gray-50/50"
+              className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 text-sm bg-slate-50/50"
             >
               <option value="">부서를 선택하세요</option>
               {departments.map((d) => (
@@ -526,29 +535,29 @@ function ExternalTaskForm({ client, onSubmitted }: {
         )}
 
         <div>
-          <label className="block text-sm font-semibold text-gray-600 mb-1.5">제목</label>
+          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">제목</label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 text-sm bg-gray-50/50 placeholder:text-gray-300"
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 text-sm bg-slate-50/50 placeholder:text-slate-300"
             placeholder="업무 요청 제목"
             required
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-600 mb-1.5">업무 종류</label>
+          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">업무 종류</label>
           <div className="flex flex-wrap gap-2">
             {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => setCategory(key)}
-                className={`px-3.5 py-2 text-xs font-medium rounded-xl border transition-all ${
+                className={`px-4 py-2 text-xs font-medium rounded-xl border transition-all ${
                   category === key
                     ? 'border-blue-400 bg-blue-50 text-blue-600 shadow-sm shadow-blue-500/10'
-                    : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                    : 'border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-500'
                 }`}
               >
                 {label}
@@ -558,11 +567,11 @@ function ExternalTaskForm({ client, onSubmitted }: {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-600 mb-1.5">내용</label>
+          <label className="block text-xs font-semibold text-slate-500 mb-2 uppercase tracking-wide">내용</label>
           <textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 resize-none text-sm bg-gray-50/50 placeholder:text-gray-300"
+            className="w-full px-4 py-3 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 resize-none text-sm bg-slate-50/50 placeholder:text-slate-300"
             rows={5}
             placeholder="업무 요청 상세 내용"
             required
@@ -578,7 +587,7 @@ function ExternalTaskForm({ client, onSubmitted }: {
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 transition-all shadow-md shadow-blue-500/25"
+          className="w-full py-3.5 bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold rounded-xl hover:from-blue-600 hover:to-blue-700 disabled:opacity-50 transition-all shadow-lg shadow-blue-500/25"
         >
           {loading ? '요청 중...' : '요청하기'}
         </button>
@@ -636,38 +645,38 @@ function ExternalTaskDetail({ task, clientName, onTaskUpdated }: {
   }
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      <div className="p-4 sm:p-6 space-y-4">
+    <div className="bg-white rounded-2xl shadow-sm border border-slate-200/60 overflow-hidden">
+      <div className="p-5 sm:p-7 space-y-5">
         {/* Status badges */}
-        <div className="flex items-center gap-2 flex-wrap">
-          <span className={`px-2.5 py-1 text-[11px] font-semibold rounded-md ${STATUS_COLORS[task.status]}`}>
+        <div className="flex items-center gap-2.5 flex-wrap">
+          <span className={`px-3 py-1 text-[11px] font-semibold rounded-lg ${STATUS_COLORS[task.status]}`}>
             {STATUS_LABELS[task.status]}
           </span>
-          <span className="text-xs text-gray-400">
+          <span className="text-xs text-slate-400">
             {new Date(task.created_at).toLocaleString('ko-KR')}
           </span>
         </div>
 
-        <h2 className="text-lg font-bold text-gray-900 leading-snug">{task.title}</h2>
+        <h2 className="text-lg font-bold text-slate-900 leading-snug">{task.title}</h2>
 
-        <div className="bg-gray-50 rounded-xl p-4">
-          <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{task.content}</p>
+        <div className="bg-slate-50 rounded-xl p-5">
+          <p className="text-sm text-slate-700 whitespace-pre-wrap leading-relaxed">{task.content}</p>
         </div>
 
         {task.handler_response && (
-          <div className="bg-blue-50/80 rounded-xl p-4 border border-blue-100/60">
-            <p className="text-[11px] font-semibold text-blue-600 mb-1.5">처리 응답</p>
+          <div className="bg-blue-50/80 rounded-xl p-5 border border-blue-100/60">
+            <p className="text-[11px] font-semibold text-blue-600 mb-2 uppercase tracking-wide">처리 응답</p>
             <p className="text-sm text-blue-900 leading-relaxed">{task.handler_response}</p>
           </div>
         )}
 
         {task.status === 'need_confirm' && (
-          <div className="bg-violet-50 rounded-xl p-4 space-y-3 border border-violet-100/60">
+          <div className="bg-violet-50 rounded-xl p-5 space-y-3 border border-violet-100/60">
             <p className="text-sm font-semibold text-violet-700">담당자가 확인을 요청했습니다</p>
             <textarea
               value={response}
               onChange={(e) => setResponse(e.target.value)}
-              className="w-full px-4 py-3 text-sm border border-violet-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/30 focus:border-violet-400 resize-none bg-white placeholder:text-gray-300"
+              className="w-full px-4 py-3 text-sm border border-violet-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-500/20 focus:border-violet-400 resize-none bg-white placeholder:text-slate-300"
               rows={2}
               placeholder="확인 내용을 입력하세요"
             />
@@ -681,7 +690,7 @@ function ExternalTaskDetail({ task, clientName, onTaskUpdated }: {
         )}
 
         {/* Comments */}
-        <div className="border-t border-gray-100 pt-4">
+        <div className="border-t border-slate-100 pt-5">
           <CommentSection
             comments={comments}
             currentUserName={clientName}
