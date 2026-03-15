@@ -237,18 +237,45 @@ function ExternalDashboard({ client, tasks, onViewAll, onSelectTask }: {
   onViewAll: () => void
   onSelectTask: (task: Task) => void
 }) {
-  const [departments, setDepartments] = useState<{ id: string; name: string; sla_warn_minutes?: number; sla_escalate_minutes?: number }[]>([])
+  const [deptStats, setDeptStats] = useState<{ id: string; name: string; pending: number; processing: number; done: number; total: number; status: 'green' | 'yellow' | 'red'; slaBreachCount: number; slaWarnCount: number }[]>([])
 
   const deptIds = client.target_dept_ids?.length > 0 ? client.target_dept_ids : (client.target_dept_id ? [client.target_dept_id] : [])
 
   useEffect(() => {
-    const fetchDepts = async () => {
+    const fetchDeptStats = async () => {
       if (deptIds.length === 0) return
-      const { data } = await supabase.from('departments').select('id, name, sla_warn_minutes, sla_escalate_minutes').in('id', deptIds).order('name')
-      if (data) setDepartments(data)
+      // Fetch departments
+      const { data: departments } = await supabase.from('departments').select('id, name, sla_warn_minutes, sla_escalate_minutes').in('id', deptIds).order('name')
+      if (!departments) return
+      // Fetch ALL tasks for these departments (not just this client's)
+      const { data: allDeptTasks } = await supabase.from('tasks').select('id, status, created_at, target_dept_id').in('target_dept_id', deptIds)
+      const allTasks = allDeptTasks || []
+
+      const stats = departments.map(dept => {
+        const deptTasks = allTasks.filter(t => t.target_dept_id === dept.id)
+        const dPending = deptTasks.filter(t => t.status === 'pending').length
+        const dProcessing = deptTasks.filter(t => t.status === 'processing' || t.status === 'need_confirm').length
+        const dDone = deptTasks.filter(t => t.status === 'done').length
+        const total = deptTasks.length
+
+        let status: 'green' | 'yellow' | 'red' = 'green'
+        const activeTasks = deptTasks.filter(t => t.status === 'pending' || t.status === 'processing' || t.status === 'need_confirm')
+        let slaBreachCount = 0
+        let slaWarnCount = 0
+        activeTasks.forEach(t => {
+          const elapsedMin = (Date.now() - new Date(t.created_at).getTime()) / 60000
+          if (dept.sla_escalate_minutes && elapsedMin >= dept.sla_escalate_minutes) slaBreachCount++
+          else if (dept.sla_warn_minutes && elapsedMin >= dept.sla_warn_minutes) slaWarnCount++
+        })
+        if (slaBreachCount > 0) status = 'red'
+        else if (slaWarnCount > 0 || dPending > 0) status = 'yellow'
+
+        return { id: dept.id, name: dept.name, pending: dPending, processing: dProcessing, done: dDone, total, status, slaBreachCount, slaWarnCount }
+      })
+      setDeptStats(stats)
     }
-    fetchDepts()
-  }, [])
+    fetchDeptStats()
+  }, [tasks])
 
   const pending = tasks.filter(t => t.status === 'pending').length
   const processing = tasks.filter(t => t.status === 'processing' || t.status === 'need_confirm').length
@@ -257,30 +284,6 @@ function ExternalDashboard({ client, tasks, onViewAll, onSelectTask }: {
 
   // Recent tasks (latest 5)
   const recentTasks = [...tasks].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)
-
-  // Per-department stats
-  const deptStats = departments.map(dept => {
-    const deptTasks = tasks.filter(t => t.target_dept_id === dept.id)
-    const dPending = deptTasks.filter(t => t.status === 'pending').length
-    const dProcessing = deptTasks.filter(t => t.status === 'processing' || t.status === 'need_confirm').length
-    const dDone = deptTasks.filter(t => t.status === 'done').length
-    const total = deptTasks.length
-
-    let status: 'green' | 'yellow' | 'red' = 'green'
-    // Check SLA
-    const activeTasks = deptTasks.filter(t => t.status === 'pending' || t.status === 'processing' || t.status === 'need_confirm')
-    let slaBreachCount = 0
-    let slaWarnCount = 0
-    activeTasks.forEach(t => {
-      const elapsedMin = (Date.now() - new Date(t.created_at).getTime()) / 60000
-      if (dept.sla_escalate_minutes && elapsedMin >= dept.sla_escalate_minutes) slaBreachCount++
-      else if (dept.sla_warn_minutes && elapsedMin >= dept.sla_warn_minutes) slaWarnCount++
-    })
-    if (slaBreachCount > 0) status = 'red'
-    else if (slaWarnCount > 0 || dPending > 0) status = 'yellow'
-
-    return { ...dept, pending: dPending, processing: dProcessing, done: dDone, total, status, slaBreachCount, slaWarnCount }
-  })
 
   const statusConfig = {
     green: { color: 'bg-emerald-500', label: '정상', bg: 'bg-emerald-50 border-emerald-200', ring: 'ring-emerald-500/30' },
