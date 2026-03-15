@@ -13,8 +13,8 @@ export function ClientManagement() {
   const [showAdd, setShowAdd] = useState(false)
   const [newName, setNewName] = useState('')
   const [newSlug, setNewSlug] = useState('')
-  const [newPassword, setNewPassword] = useState('')
-  const [newDeptId, setNewDeptId] = useState('')
+  const [newDeptIds, setNewDeptIds] = useState<string[]>([])
+  const [deptSelectAll, setDeptSelectAll] = useState(true)
   const [newCategory, setNewCategory] = useState('general')
   const [newDescription, setNewDescription] = useState('')
   const [error, setError] = useState('')
@@ -41,13 +41,28 @@ export function ClientManagement() {
     }
   }
 
+  // 한글 → 영문 슬러그 자동 생성 (한글은 제거, 영문/숫자/공백만 유지 후 공백→하이픈)
+  const generateSlug = (name: string): string => {
+    return name
+      .trim()
+      .toLowerCase()
+      .replace(/[^a-z0-9가-힣\s-]/g, '')
+      .replace(/[가-힣]+/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '') || name.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
+  }
+
+  const handleNameChange = (name: string) => {
+    setNewName(name)
+    setNewSlug(generateSlug(name))
+  }
+
   const validate = (): string | null => {
     if (!newName.trim()) return '업체명을 입력해주세요'
-    if (!newSlug.trim()) return 'URL 슬러그를 입력해주세요'
-    if (newSlug.length < 3) return 'URL 슬러그는 3자 이상이어야 합니다'
-    if (!newPassword) return '비밀번호를 입력해주세요'
-    if (newPassword.length < 4) return '비밀번호는 4자 이상이어야 합니다'
-    if (!newDeptId) return '담당 부서를 선택해주세요'
+    if (!newSlug.trim()) return 'URL 주소를 입력해주세요'
+    if (newSlug.length < 2) return 'URL 주소는 2자 이상이어야 합니다'
+    if (!deptSelectAll && newDeptIds.length === 0) return '담당 부서를 선택해주세요'
     return null
   }
 
@@ -60,18 +75,27 @@ export function ClientManagement() {
     setError('')
 
     try {
-      const { data: hashedPw } = await supabase.rpc('crypt_password', { pw: newPassword })
+      const { data: hashedPw } = await supabase.rpc('crypt_password', { pw: '123456' })
 
-      const { error: err } = await supabase.from('external_clients').insert({
+      if (!hashedPw) {
+        setError('비밀번호 암호화에 실패했습니다')
+        return
+      }
+
+      const selectedDeptIds = deptSelectAll ? departments.map(d => d.id) : newDeptIds
+      const { data: inserted, error: err } = await supabase.from('external_clients').insert({
         name: newName,
         slug: newSlug,
         password_hash: hashedPw,
-        target_dept_id: newDeptId,
+        target_dept_id: selectedDeptIds[0] || null,
+        target_dept_ids: selectedDeptIds,
         default_category: newCategory,
         description: newDescription || null,
-      } as any)
+        must_change_password: true,
+      } as any).select()
 
       if (err) {
+        console.error('Client insert error:', err)
         if (err.message.includes('duplicate') || err.message.includes('unique')) {
           setError('이미 사용 중인 URL 슬러그입니다')
         } else {
@@ -80,11 +104,16 @@ export function ClientManagement() {
         return
       }
 
+      if (!inserted || inserted.length === 0) {
+        setError('업체 추가에 실패했습니다. 권한을 확인해주세요.')
+        return
+      }
+
       setShowAdd(false)
       setNewName('')
       setNewSlug('')
-      setNewPassword('')
-      setNewDeptId('')
+      setNewDeptIds([])
+      setDeptSelectAll(true)
       setNewCategory('general')
       setNewDescription('')
       fetchAll()
@@ -123,17 +152,17 @@ export function ClientManagement() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-bold text-gray-900">업체 관리</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">업체 관리</h2>
+          <p className="text-[15px] text-slate-500 mt-1.5">
             외부 업체에 업무 요청 링크를 제공합니다. 업체는 비밀번호만으로 접속하여 업무를 요청할 수 있습니다.
           </p>
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
+          className="flex items-center gap-2 px-5 py-3 text-[15px] font-medium bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
         >
           <Plus className="w-4 h-4" />
           업체 추가
@@ -147,13 +176,13 @@ export function ClientManagement() {
               <label className="block text-sm font-medium text-gray-600 mb-1.5">업체명 *</label>
               <input
                 value={newName}
-                onChange={(e) => setNewName(e.target.value)}
+                onChange={(e) => handleNameChange(e.target.value)}
                 className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
                 placeholder="예: ABC 물류"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">URL 슬러그 * <span className="text-gray-300 font-normal">(3자 이상)</span></label>
+              <label className="block text-sm font-medium text-gray-600 mb-1.5">URL 주소 <span className="text-gray-300 font-normal">(자동생성, 수정 가능)</span></label>
               <input
                 value={newSlug}
                 onChange={(e) => setNewSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
@@ -161,33 +190,75 @@ export function ClientManagement() {
                 placeholder="예: abc-logistics"
               />
               {newSlug && (
-                <p className="text-xs text-gray-400 mt-1">
-                  링크: /request/{newSlug}
-                </p>
+                <div className="flex items-center gap-1.5 mt-1.5">
+                  <p className="text-xs text-blue-500 font-medium truncate">
+                    {window.location.origin}/request/{newSlug}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      navigator.clipboard.writeText(`${window.location.origin}/request/${newSlug}`)
+                      setCopiedSlug('new')
+                      setTimeout(() => setCopiedSlug(null), 2000)
+                    }}
+                    className="p-0.5 text-gray-300 hover:text-blue-500 transition-colors shrink-0"
+                  >
+                    {copiedSlug === 'new' ? <Check className="w-3.5 h-3.5 text-green-500" /> : <Copy className="w-3.5 h-3.5" />}
+                  </button>
+                </div>
               )}
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">비밀번호 * <span className="text-gray-300 font-normal">(4자 이상)</span></label>
-              <input
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
-                placeholder="접속 비밀번호"
-              />
+              <label className="block text-sm font-medium text-gray-600 mb-1.5">초기 비밀번호</label>
+              <div className="px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-gray-50 text-gray-500">
+                123456 <span className="text-xs text-gray-400">(업체 첫 로그인 시 변경)</span>
+              </div>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">담당 부서 *</label>
-              <select
-                value={newDeptId}
-                onChange={(e) => setNewDeptId(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
-              >
-                <option value="">선택</option>
-                {departments.map((d) => (
-                  <option key={d.id} value={d.id}>{d.name}</option>
-                ))}
-              </select>
+            <div className="sm:col-span-2">
+              <label className="block text-sm font-medium text-gray-600 mb-2">담당 부서 *</label>
+              <div className="flex flex-wrap gap-2">
+                <label className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl border cursor-pointer transition-all ${
+                  deptSelectAll
+                    ? 'border-blue-400 bg-blue-50 text-blue-600'
+                    : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                }`}>
+                  <input
+                    type="checkbox"
+                    checked={deptSelectAll}
+                    onChange={(e) => {
+                      setDeptSelectAll(e.target.checked)
+                      if (e.target.checked) setNewDeptIds([])
+                    }}
+                    className="sr-only"
+                  />
+                  전체 부서
+                </label>
+                {departments.map((d) => {
+                  const checked = deptSelectAll || newDeptIds.includes(d.id)
+                  return (
+                    <label key={d.id} className={`flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-xl border cursor-pointer transition-all ${
+                      checked
+                        ? 'border-blue-400 bg-blue-50 text-blue-600'
+                        : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                    } ${deptSelectAll ? 'opacity-50 pointer-events-none' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        disabled={deptSelectAll}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setNewDeptIds([...newDeptIds, d.id])
+                          } else {
+                            setNewDeptIds(newDeptIds.filter(id => id !== d.id))
+                          }
+                        }}
+                        className="sr-only"
+                      />
+                      {d.name}
+                    </label>
+                  )
+                })}
+              </div>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-1.5">기본 업무종류</label>
@@ -261,7 +332,12 @@ export function ClientManagement() {
                   </div>
                 </td>
                 <td className="px-5 py-3.5 text-sm text-gray-600">
-                  {departments.find((d) => d.id === c.target_dept_id)?.name || '-'}
+                  {(c.target_dept_ids?.length > 0 && c.target_dept_ids.length === departments.length)
+                    ? '전체 부서'
+                    : c.target_dept_ids?.length > 0
+                      ? c.target_dept_ids.map(id => departments.find(d => d.id === id)?.name).filter(Boolean).join(', ')
+                      : departments.find((d) => d.id === c.target_dept_id)?.name || '-'
+                  }
                 </td>
                 <td className="px-5 py-3.5 text-center">
                   <button

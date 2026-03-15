@@ -10,7 +10,7 @@ interface SystemConfig {
 }
 
 export function SystemSettings() {
-  const [companyName, setCompanyName] = useState('WJM')
+  const [companyName, setCompanyName] = useState('WavenetHelper')
   const [categories, setCategories] = useState<{ key: string; label: string }[]>([])
   const [newCatKey, setNewCatKey] = useState('')
   const [newCatLabel, setNewCatLabel] = useState('')
@@ -28,7 +28,7 @@ export function SystemSettings() {
       const stored = localStorage.getItem('wjm_system_config')
       if (stored) {
         const config: SystemConfig = JSON.parse(stored)
-        setCompanyName(config.companyName || 'WJM')
+        setCompanyName(config.companyName || 'WavenetHelper')
         if (config.categories?.length > 0) {
           setCategories(config.categories)
         }
@@ -79,49 +79,49 @@ export function SystemSettings() {
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-base font-bold text-gray-900">시스템 설정</h2>
-        <p className="text-sm text-gray-400 mt-1">
+        <h2 className="text-xl font-bold text-slate-900 tracking-tight">시스템 설정</h2>
+        <p className="text-[15px] text-slate-500 mt-1.5">
           시스템 기본 설정을 관리합니다.
         </p>
       </div>
 
       {/* Company name */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-        <div className="flex items-center gap-2">
-          <Palette className="w-4 h-4 text-gray-400" />
-          <p className="text-sm font-semibold text-gray-700">기본 정보</p>
+      <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <Palette className="w-5 h-5 text-slate-500" />
+          <p className="text-[15px] font-semibold text-slate-700">기본 정보</p>
         </div>
         <div className="max-w-md">
-          <label className="block text-sm font-medium text-gray-600 mb-1.5">회사명</label>
+          <label className="block text-[14px] font-medium text-slate-600 mb-2">회사명</label>
           <input
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
-            className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+            className="w-full px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
             placeholder="회사명"
           />
         </div>
       </div>
 
       {/* Category management */}
-      <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
-        <div className="flex items-center gap-2">
-          <Tag className="w-4 h-4 text-gray-400" />
-          <p className="text-sm font-semibold text-gray-700">업무 종류 관리</p>
+      <div className="bg-white rounded-xl border border-slate-200 p-6 space-y-5 shadow-sm">
+        <div className="flex items-center gap-2.5">
+          <Tag className="w-5 h-5 text-slate-500" />
+          <p className="text-[15px] font-semibold text-slate-700">업무 종류 관리</p>
         </div>
-        <p className="text-xs text-gray-400">
+        <p className="text-[14px] text-slate-500">
           업무 생성 시 선택할 수 있는 업무 종류를 관리합니다. 변경사항은 저장 버튼을 눌러야 적용됩니다.
         </p>
 
         {/* Current categories */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {categories.map((cat) => (
             <div
               key={cat.key}
-              className="flex items-center justify-between px-4 py-2.5 bg-gray-50 rounded-xl border border-gray-100"
+              className="flex items-center justify-between px-5 py-3.5 bg-slate-50 rounded-xl border border-slate-100"
             >
               <div className="flex items-center gap-3">
-                <code className="text-[11px] text-gray-400 bg-gray-100 px-2 py-0.5 rounded font-mono">{cat.key}</code>
-                <span className="text-sm text-gray-700 font-medium">{cat.label}</span>
+                <code className="text-[13px] text-slate-500 bg-slate-100 px-2.5 py-1 rounded font-mono">{cat.key}</code>
+                <span className="text-[15px] text-slate-700 font-medium">{cat.label}</span>
               </div>
               <button
                 onClick={() => setDeleteTarget(cat.key)}
@@ -135,22 +135,22 @@ export function SystemSettings() {
         </div>
 
         {/* Add new category */}
-        <div className="flex flex-col sm:flex-row gap-2 pt-2">
+        <div className="flex flex-col sm:flex-row gap-3 pt-2">
           <input
             value={newCatKey}
             onChange={(e) => setNewCatKey(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-            className="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+            className="flex-1 px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
             placeholder="키 (영문, 예: delivery)"
           />
           <input
             value={newCatLabel}
             onChange={(e) => setNewCatLabel(e.target.value)}
-            className="flex-1 px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+            className="flex-1 px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
             placeholder="표시 이름 (예: 배송)"
           />
           <button
             onClick={handleAddCategory}
-            className="flex items-center justify-center gap-1.5 px-4 py-2.5 text-sm bg-gray-100 text-gray-600 rounded-xl hover:bg-gray-200 transition-colors font-medium shrink-0"
+            className="flex items-center justify-center gap-2 px-5 py-3 text-[15px] bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition-colors font-medium shrink-0"
           >
             <Plus className="w-3.5 h-3.5" />
             추가
@@ -160,15 +160,15 @@ export function SystemSettings() {
 
       {/* Error & Save */}
       {error && (
-        <div className="text-sm text-red-600 bg-red-50 px-4 py-2.5 rounded-xl border border-red-100">
+        <div className="text-[15px] text-red-600 bg-red-50 px-5 py-3 rounded-xl border border-red-100">
           {error}
         </div>
       )}
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4">
         <button
           onClick={handleSave}
-          className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white text-sm font-semibold rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
+          className="flex items-center gap-2 px-6 py-3.5 bg-blue-500 text-white text-[15px] font-semibold rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
         >
           <Save className="w-4 h-4" />
           설정 저장

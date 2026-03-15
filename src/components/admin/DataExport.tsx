@@ -129,75 +129,75 @@ export function DataExport() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-base font-bold text-gray-900">데이터 내보내기</h2>
-        <p className="text-sm text-gray-400 mt-1">
+        <h2 className="text-xl font-bold text-slate-900 tracking-tight">데이터 내보내기</h2>
+        <p className="text-[15px] text-slate-500 mt-1.5">
           업무 데이터를 CSV 파일로 다운로드합니다. Excel에서 바로 열 수 있습니다.
         </p>
       </div>
 
       {/* Export type selector */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <button
           onClick={() => setExportType('tasks')}
-          className={`p-5 rounded-xl border-2 text-left transition-all ${
-            exportType === 'tasks'
+          className={`p-6 rounded-xl border-2 text-left transition-all ${
+              exportType === 'tasks'
               ? 'border-blue-400 bg-blue-50/50'
-              : 'border-gray-200 hover:border-gray-300'
+              : 'border-slate-200 hover:border-slate-300'
           }`}
         >
-          <FileSpreadsheet className={`w-6 h-6 mb-2 ${exportType === 'tasks' ? 'text-blue-500' : 'text-gray-300'}`} />
-          <p className="text-sm font-semibold text-gray-900">업무 목록</p>
-          <p className="text-xs text-gray-400 mt-0.5">전체 업무 데이터를 CSV로 내보냅니다</p>
+          <FileSpreadsheet className={`w-6 h-6 mb-2 ${exportType === 'tasks' ? 'text-blue-500' : 'text-slate-300'}`} />
+          <p className="text-[15px] font-semibold text-slate-900">업무 목록</p>
+          <p className="text-[14px] text-slate-500 mt-0.5">전체 업무 데이터를 CSV로 내보냅니다</p>
         </button>
         <button
           onClick={() => setExportType('stats')}
-          className={`p-5 rounded-xl border-2 text-left transition-all ${
-            exportType === 'stats'
+          className={`p-6 rounded-xl border-2 text-left transition-all ${
+              exportType === 'stats'
               ? 'border-blue-400 bg-blue-50/50'
-              : 'border-gray-200 hover:border-gray-300'
+              : 'border-slate-200 hover:border-slate-300'
           }`}
         >
-          <FileSpreadsheet className={`w-6 h-6 mb-2 ${exportType === 'stats' ? 'text-blue-500' : 'text-gray-300'}`} />
-          <p className="text-sm font-semibold text-gray-900">통계 요약</p>
-          <p className="text-xs text-gray-400 mt-0.5">상태·부서별 집계 데이터를 내보냅니다</p>
+          <FileSpreadsheet className={`w-6 h-6 mb-2 ${exportType === 'stats' ? 'text-blue-500' : 'text-slate-300'}`} />
+          <p className="text-[15px] font-semibold text-slate-900">통계 요약</p>
+          <p className="text-[14px] text-slate-500 mt-0.5">상태·부서별 집계 데이터를 내보냅니다</p>
         </button>
       </div>
 
       {/* Task export filters */}
       {exportType === 'tasks' && (
-        <div className="bg-gray-50 rounded-xl p-5 space-y-4 border border-gray-200">
-          <p className="text-sm font-medium text-gray-600">필터 조건 (선택)</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-slate-50 rounded-xl p-6 space-y-5 border border-slate-200">
+          <p className="text-[15px] font-medium text-slate-600">필터 조건 (선택)</p>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                <Calendar className="w-3 h-3 inline mr-1" />시작일
+              <label className="block text-[14px] font-medium text-slate-600 mb-2">
+                <Calendar className="w-4 h-4 inline mr-1.5" />시작일
               </label>
               <input
                 type="date"
                 value={dateFrom}
                 onChange={(e) => setDateFrom(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+                className="w-full px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">
-                <Calendar className="w-3 h-3 inline mr-1" />종료일
+              <label className="block text-[14px] font-medium text-slate-600 mb-2">
+                <Calendar className="w-4 h-4 inline mr-1.5" />종료일
               </label>
               <input
                 type="date"
                 value={dateTo}
                 onChange={(e) => setDateTo(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+                className="w-full px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-500 mb-1.5">상태</label>
+              <label className="block text-[14px] font-medium text-slate-600 mb-2">상태</label>
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+                className="w-full px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
               >
                 <option value="">전체</option>
                 {Object.entries(STATUS_LABELS).map(([key, label]) => (
@@ -213,7 +213,7 @@ export function DataExport() {
       <button
         onClick={exportType === 'tasks' ? handleExportTasks : handleExportStats}
         disabled={loading}
-        className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 bg-blue-500 text-white text-sm font-semibold rounded-xl hover:bg-blue-600 disabled:opacity-50 transition-colors shadow-sm shadow-blue-500/20"
+        className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3.5 bg-blue-500 text-white text-[15px] font-semibold rounded-xl hover:bg-blue-600 disabled:opacity-50 transition-colors shadow-sm shadow-blue-500/20"
       >
         <Download className="w-4 h-4" />
         {loading ? '내보내는 중...' : 'CSV 다운로드'}

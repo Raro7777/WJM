@@ -96,7 +96,7 @@ export function TaskList() {
                 value={search}
                 onChange={(e) => { setSearch(e.target.value); setVisibleCount(PAGE_SIZE) }}
                 placeholder="업무 검색 (제목, 내용, 요청자)"
-                className="w-full pl-10 pr-8 py-2.5 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-white placeholder:text-gray-300"
+                className="w-full pl-10 pr-8 py-3 text-[15px] border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-white placeholder:text-slate-400"
               />
               {search && (
                 <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-300 hover:text-gray-500">
@@ -109,7 +109,7 @@ export function TaskList() {
               className={`p-2.5 rounded-xl border transition-colors relative shrink-0 ${
                 showFilters || activeFilterCount > 0
                   ? 'border-blue-400 bg-blue-50 text-blue-600'
-                  : 'border-gray-200 text-gray-400 hover:border-gray-300'
+                  : 'border-slate-200 text-slate-500 hover:border-slate-300'
               }`}
             >
               <SlidersHorizontal className="w-4 h-4" />
@@ -132,23 +132,23 @@ export function TaskList() {
 
         {/* Advanced filters */}
         {showFilters && !isElectron && (
-          <div className="flex flex-wrap items-center gap-2 px-1">
-            <span className="text-xs font-medium text-gray-400">종류:</span>
+          <div className="flex flex-wrap items-center gap-3 px-1">
+            <span className="text-[13px] font-medium text-slate-600">종류:</span>
             <select
               value={categoryFilter}
               onChange={(e) => { setCategoryFilter(e.target.value); setVisibleCount(PAGE_SIZE) }}
-              className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 bg-white"
+              className="px-3 py-2 text-[13px] border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 bg-white text-slate-700"
             >
               <option value="all">전체</option>
               {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
                 <option key={key} value={key}>{label}</option>
               ))}
             </select>
-            <span className="text-xs font-medium text-gray-400 ml-2">우선순위:</span>
+            <span className="text-[13px] font-medium text-slate-600 ml-1">우선순위:</span>
             <select
               value={priorityFilter}
               onChange={(e) => { setPriorityFilter(e.target.value); setVisibleCount(PAGE_SIZE) }}
-              className="px-3 py-1.5 text-xs border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 bg-white"
+              className="px-3 py-2 text-[13px] border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500/30 bg-white text-slate-700"
             >
               <option value="all">전체</option>
               {Object.entries(PRIORITY_LABELS).map(([key, label]) => (
@@ -156,10 +156,10 @@ export function TaskList() {
               ))}
             </select>
             {activeFilterCount > 0 && (
-              <button
-                onClick={() => { setCategoryFilter('all'); setPriorityFilter('all') }}
-                className="text-xs text-blue-500 hover:text-blue-700 ml-1"
-              >
+            <button
+              onClick={() => { setCategoryFilter('all'); setPriorityFilter('all') }}
+              className="text-[13px] font-medium text-blue-500 hover:text-blue-700 ml-1"
+            >
                 초기화
               </button>
             )}
@@ -172,10 +172,10 @@ export function TaskList() {
             <button
               key={f}
               onClick={() => { setFilter(f); setVisibleCount(PAGE_SIZE) }}
-              className={`px-3.5 sm:px-4 py-2 text-xs font-medium rounded-full whitespace-nowrap transition-all ${
+              className={`px-4 sm:px-5 py-2.5 text-[13px] font-medium rounded-full whitespace-nowrap transition-all ${
                 filter === f
                   ? 'bg-blue-500 text-white shadow-sm shadow-blue-500/20'
-                  : 'bg-gray-100 text-gray-500 hover:bg-gray-200 hover:text-gray-700'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200 hover:text-slate-800'
               }`}
             >
               {f === 'all' ? '전체' : f === 'pending' ? '대기중' : f === 'processing' ? '처리중' : f === 'need_confirm' ? '확인요청' : f === 'done' ? '완료' : '반려'}
@@ -193,12 +193,12 @@ export function TaskList() {
       )}
 
       {/* Task list */}
-      <div className={isElectron ? 'flex-1 overflow-y-auto' : 'bg-white rounded-xl border border-gray-200 overflow-hidden'}>
+      <div className={isElectron ? 'flex-1 overflow-y-auto' : 'bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm'}>
         {loading ? (
           <LoadingSpinner />
         ) : filteredTasks.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-20 text-gray-300">
-            <p className="text-sm">{search ? '검색 결과가 없습니다' : '업무 요청이 없습니다'}</p>
+          <div className="flex flex-col items-center justify-center py-20 text-slate-400">
+            <p className="text-[15px]">{search ? '검색 결과가 없습니다' : '업무 요청이 없습니다'}</p>
             {search && (
               <button onClick={() => setSearch('')} className="mt-2 text-xs text-blue-500 hover:text-blue-700">
                 검색 초기화
@@ -207,16 +207,16 @@ export function TaskList() {
           </div>
         ) : (
           <>
-            <div className="divide-y divide-gray-100/60">
+            <div className="divide-y divide-slate-100">
               {visibleTasks.map((task) => (
                 <TaskCard key={task.id} task={task} onClick={() => setSelectedTask(task)} department={departments.find(d => d.id === task.target_dept_id)} />
               ))}
             </div>
             {hasMore && (
-              <div className="px-5 py-4 text-center border-t border-gray-100">
+              <div className="px-5 py-5 text-center border-t border-slate-100">
                 <button
                   onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
-                  className="text-sm text-blue-500 hover:text-blue-700 font-medium"
+                  className="text-[15px] text-blue-500 hover:text-blue-700 font-medium"
                 >
                   더 보기 ({filteredTasks.length - visibleCount}개 남음)
                 </button>

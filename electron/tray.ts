@@ -33,7 +33,7 @@ export function createTray(mainWindow: BrowserWindow) {
   const trayIcon = nativeImage.createFromBuffer(buffer, { width: size, height: size })
 
   tray = new Tray(trayIcon)
-  tray.setToolTip('WJM - 업무처리 요청')
+  tray.setToolTip('WavenetHelper - 업무처리 요청')
 
   const contextMenu = Menu.buildFromTemplate([
     {
@@ -67,8 +67,8 @@ export function createTray(mainWindow: BrowserWindow) {
 export function updateTrayBadge(count: number) {
   if (!tray) return
   if (count > 0) {
-    tray.setToolTip(`WJM - ${count}개의 새 알림`)
+    tray.setToolTip(`WavenetHelper - ${count}개의 새 알림`)
   } else {
-    tray.setToolTip('WJM - 업무처리 요청')
+    tray.setToolTip('WavenetHelper - 업무처리 요청')
   }
 }

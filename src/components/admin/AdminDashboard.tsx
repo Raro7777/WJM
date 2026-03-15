@@ -38,7 +38,7 @@ export function AdminDashboard() {
 
   // Handler performance stats
   const handlerStats = useMemo(() => {
-    const handlers = profiles.filter((p) => p.role === 'handler' || p.role === 'admin')
+    const handlers = profiles.filter((p) => ['super_admin', 'site_admin', 'dept_manager', 'dept_sub_manager'].includes(p.role))
     return handlers.map((h) => {
       const assigned = tasks.filter((t) => t.handler_id === h.id)
       const processing = assigned.filter((t) => t.status === 'processing').length
@@ -138,67 +138,67 @@ export function AdminDashboard() {
   const maxWeekly = Math.max(...weeklyTrend.map((w) => Math.max(w.created, w.completed)), 1)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h2 className="text-base font-bold text-gray-900">운영 현황</h2>
-        <p className="text-sm text-gray-400 mt-1">담당자·업체·트렌드를 한눈에 파악합니다.</p>
+        <h2 className="text-xl font-bold text-slate-900 tracking-tight">운영 현황</h2>
+        <p className="text-[15px] text-slate-500 mt-1.5">담당자·업체·트렌드를 한눈에 파악합니다.</p>
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <p className="text-2xl font-bold text-gray-900">{tasks.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5">전체 업무</p>
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-5">
+        <div className="bg-white rounded-xl border border-slate-200 p-6 text-center shadow-sm">
+          <p className="text-[28px] font-bold text-slate-900 tracking-tight">{tasks.length}</p>
+          <p className="text-[14px] text-slate-500 mt-1">전체 업무</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <p className="text-2xl font-bold text-blue-600">{profiles.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5">사용자</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-6 text-center shadow-sm">
+          <p className="text-[28px] font-bold text-blue-600 tracking-tight">{profiles.length}</p>
+          <p className="text-[14px] text-slate-500 mt-1">사용자</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <p className="text-2xl font-bold text-emerald-600">{departments.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5">부서</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-6 text-center shadow-sm">
+          <p className="text-[28px] font-bold text-emerald-600 tracking-tight">{departments.length}</p>
+          <p className="text-[14px] text-slate-500 mt-1">부서</p>
         </div>
-        <div className="bg-white rounded-xl border border-gray-200 p-4 text-center">
-          <p className="text-2xl font-bold text-amber-600">{slaViolations.length}</p>
-          <p className="text-xs text-gray-400 mt-0.5">SLA 초과</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-6 text-center shadow-sm">
+          <p className="text-[28px] font-bold text-amber-600 tracking-tight">{slaViolations.length}</p>
+          <p className="text-[14px] text-slate-500 mt-1">SLA 초과</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Handler Performance */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <Users className="w-4 h-4 text-gray-400" />
-            <p className="text-sm font-semibold text-gray-700">담당자별 처리 현황</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <div className="flex items-center gap-2.5 mb-5">
+            <Users className="w-5 h-5 text-slate-500" />
+            <p className="text-[15px] font-semibold text-slate-700">담당자별 처리 현황</p>
           </div>
-          <div className="space-y-3">
+          <div className="space-y-4">
             {handlerStats.length === 0 ? (
-              <p className="text-xs text-gray-300 text-center py-4">담당자가 없습니다</p>
+              <p className="text-[14px] text-slate-400 text-center py-8">담당자가 없습니다</p>
             ) : (
               handlerStats.map((h) => (
-                <div key={h.id} className="flex items-center gap-3">
+                <div key={h.id} className="flex items-center gap-4">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                    className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                     style={{ backgroundColor: h.avatarColor }}
                   >
-                    <span className="text-xs font-bold text-white">{h.name.charAt(0)}</span>
+                    <span className="text-sm font-bold text-white">{h.name.charAt(0)}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-1">
-                      <p className="text-sm font-medium text-gray-700 truncate">{h.name}</p>
-                      <div className="flex items-center gap-2 text-[11px] shrink-0">
-                        <span className="text-blue-500">{h.processing} 처리중</span>
-                        <span className="text-emerald-500">{h.done} 완료</span>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <p className="text-[15px] font-medium text-slate-700 truncate">{h.name}</p>
+                      <div className="flex items-center gap-2.5 text-[12px] shrink-0">
+                        <span className="text-blue-500 font-medium">{h.processing} 처리중</span>
+                        <span className="text-emerald-500 font-medium">{h.done} 완료</span>
                       </div>
                     </div>
-                    <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
                       <div
                         className="h-full bg-gradient-to-r from-blue-400 to-emerald-400 rounded-full transition-all"
                         style={{ width: h.total > 0 ? `${(h.done / Math.max(h.total, 1)) * 100}%` : '0%' }}
                       />
                     </div>
                     {h.avgHours !== null && (
-                      <p className="text-[10px] text-gray-300 mt-0.5">평균 {h.avgHours}시간</p>
+                      <p className="text-[12px] text-slate-400 mt-1">평균 {h.avgHours}시간</p>
                     )}
                   </div>
                 </div>
@@ -208,62 +208,62 @@ export function AdminDashboard() {
         </div>
 
         {/* Weekly Trend */}
-        <div className="bg-white rounded-xl border border-gray-200 p-5">
-          <div className="flex items-center gap-2 mb-4">
-            <TrendingUp className="w-4 h-4 text-gray-400" />
-            <p className="text-sm font-semibold text-gray-700">주간 업무 추이 (최근 4주)</p>
+        <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+          <div className="flex items-center gap-2.5 mb-5">
+            <TrendingUp className="w-5 h-5 text-slate-500" />
+            <p className="text-[15px] font-semibold text-slate-700">주간 업무 추이 (최근 4주)</p>
           </div>
-          <div className="flex items-end gap-3 h-32">
+          <div className="flex items-end gap-4 h-36">
             {weeklyTrend.map((w, i) => (
-              <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                <div className="w-full flex gap-0.5 items-end justify-center" style={{ height: '80px' }}>
+              <div key={i} className="flex-1 flex flex-col items-center gap-2">
+                <div className="w-full flex gap-1 items-end justify-center" style={{ height: '90px' }}>
                   <div
-                    className="w-3 bg-blue-400 rounded-t transition-all"
-                    style={{ height: `${(w.created / maxWeekly) * 80}px` }}
+                    className="w-4 bg-blue-400 rounded-t transition-all"
+                    style={{ height: `${(w.created / maxWeekly) * 90}px` }}
                     title={`생성: ${w.created}건`}
                   />
                   <div
-                    className="w-3 bg-emerald-400 rounded-t transition-all"
-                    style={{ height: `${(w.completed / maxWeekly) * 80}px` }}
+                    className="w-4 bg-emerald-400 rounded-t transition-all"
+                    style={{ height: `${(w.completed / maxWeekly) * 90}px` }}
                     title={`완료: ${w.completed}건`}
                   />
                 </div>
-                <p className="text-[10px] text-gray-400">{w.label}~</p>
-                <div className="text-[9px] text-gray-300">
+                <p className="text-[12px] text-slate-500">{w.label}~</p>
+                <div className="text-[11px] text-slate-400">
                   {w.created}/{w.completed}
                 </div>
               </div>
             ))}
           </div>
-          <div className="flex items-center justify-center gap-4 mt-3 text-[10px] text-gray-400">
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-sm bg-blue-400" /> 생성
+          <div className="flex items-center justify-center gap-6 mt-4 text-[13px] text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-blue-400" /> 생성
             </span>
-            <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-sm bg-emerald-400" /> 완료
+            <span className="flex items-center gap-1.5">
+              <span className="w-3 h-3 rounded-sm bg-emerald-400" /> 완료
             </span>
           </div>
         </div>
 
         {/* Client Stats */}
         {clientStats.length > 0 && (
-          <div className="bg-white rounded-xl border border-gray-200 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <Building2 className="w-4 h-4 text-gray-400" />
-              <p className="text-sm font-semibold text-gray-700">업체별 요청 현황</p>
+          <div className="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
+            <div className="flex items-center gap-2.5 mb-5">
+              <Building2 className="w-5 h-5 text-slate-500" />
+              <p className="text-[15px] font-semibold text-slate-700">업체별 요청 현황</p>
             </div>
-            <div className="space-y-3">
+            <div className="space-y-4">
               {clientStats.map((c) => (
-                <div key={c.id} className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 min-w-0">
-                    <div className={`w-2 h-2 rounded-full shrink-0 ${c.isActive ? 'bg-green-400' : 'bg-gray-300'}`} />
-                    <p className="text-sm text-gray-700 truncate">{c.name}</p>
+                <div key={c.id} className="flex items-center justify-between py-2">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${c.isActive ? 'bg-green-400' : 'bg-slate-300'}`} />
+                    <p className="text-[15px] text-slate-700 truncate">{c.name}</p>
                   </div>
-                  <div className="flex items-center gap-2 text-[11px] shrink-0">
-                    <span className="text-amber-500">{c.pending}</span>
-                    <span className="text-blue-500">{c.processing}</span>
-                    <span className="text-emerald-500">{c.done}</span>
-                    <span className="text-gray-300 font-medium ml-1">총 {c.total}</span>
+                  <div className="flex items-center gap-3 text-[13px] shrink-0">
+                    <span className="text-amber-500 font-medium">{c.pending}</span>
+                    <span className="text-blue-500 font-medium">{c.processing}</span>
+                    <span className="text-emerald-500 font-medium">{c.done}</span>
+                    <span className="text-slate-400 font-medium ml-1">총 {c.total}</span>
                   </div>
                 </div>
               ))}
@@ -273,25 +273,25 @@ export function AdminDashboard() {
 
         {/* SLA Violations */}
         {slaViolations.length > 0 && (
-          <div className="bg-white rounded-xl border border-red-200 p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <AlertTriangle className="w-4 h-4 text-red-500" />
-              <p className="text-sm font-semibold text-red-700">SLA 초과 업무</p>
+          <div className="bg-white rounded-xl border border-red-200 p-6 shadow-sm">
+            <div className="flex items-center gap-2.5 mb-5">
+              <AlertTriangle className="w-5 h-5 text-red-500" />
+              <p className="text-[15px] font-semibold text-red-700">SLA 초과 업무</p>
             </div>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {slaViolations.slice(0, 10).map((v) => (
-                <div key={v.task.id} className="flex items-center justify-between px-3 py-2 bg-red-50/50 rounded-lg">
+                <div key={v.task.id} className="flex items-center justify-between px-4 py-3 bg-red-50/60 rounded-xl">
                   <div className="min-w-0 flex-1">
-                    <p className="text-sm text-gray-700 truncate">{v.task.title}</p>
-                    <p className="text-[10px] text-gray-400">{v.deptName}</p>
+                    <p className="text-[15px] text-slate-700 truncate">{v.task.title}</p>
+                    <p className="text-[13px] text-slate-500 mt-0.5">{v.deptName}</p>
                   </div>
-                  <span className="text-xs text-red-600 font-medium shrink-0 ml-2">
+                  <span className="text-[13px] text-red-600 font-semibold shrink-0 ml-3">
                     +{v.exceeded > 60 ? `${Math.round(v.exceeded / 60)}시간` : `${v.exceeded}분`}
                   </span>
                 </div>
               ))}
               {slaViolations.length > 10 && (
-                <p className="text-[11px] text-gray-400 text-center pt-1">
+                <p className="text-[13px] text-slate-500 text-center pt-2">
                   외 {slaViolations.length - 10}건 더
                 </p>
               )}

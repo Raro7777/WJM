@@ -26,31 +26,34 @@ export function AdminSettings() {
   const [activeTab, setActiveTab] = useState<SettingsTab>('dashboard')
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
       {/* Tab bar - horizontal scroll on mobile */}
-      <div className="flex border-b border-gray-200 overflow-x-auto scrollbar-hide">
-        {tabs.map((tab) => {
+      <div className="flex border-b border-slate-200 overflow-x-auto scrollbar-hide bg-slate-50/50">
+        {tabs.map((tab, index) => {
           const Icon = tab.icon
           return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-1.5 px-4 sm:px-5 py-3.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap shrink-0 ${
-                activeTab === tab.id
-                  ? 'border-blue-500 text-blue-700'
-                  : 'border-transparent text-gray-400 hover:text-gray-600'
-              }`}
-            >
-              <Icon className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{tab.label}</span>
-              <span className="sm:hidden">{tab.label}</span>
-            </button>
+            <div key={tab.id} className="flex items-stretch">
+              {index > 0 && (
+                <div className="w-px bg-slate-200 self-center h-6 shrink-0 mx-4" aria-hidden />
+              )}
+              <button
+                onClick={() => setActiveTab(tab.id)}
+                className={`flex items-center justify-center gap-2.5 min-h-[48px] px-5 sm:px-6 py-3.5 text-[15px] font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 touch-manipulation ${
+                  activeTab === tab.id
+                    ? 'border-blue-500 text-blue-700 bg-blue-50/50'
+                    : 'border-transparent text-slate-500 hover:text-slate-700 hover:bg-slate-50/80'
+                }`}
+              >
+                <Icon className="w-5 h-5 shrink-0" />
+                <span>{tab.label}</span>
+              </button>
+            </div>
           )
         })}
       </div>
 
       {/* Content */}
-      <div className="p-4 sm:p-6">
+      <div className="pt-6 pb-6 px-8 sm:pt-8 sm:pb-8 sm:px-12 lg:pt-10 lg:pb-10 lg:px-16 bg-slate-50/30 min-h-[400px]">
         {activeTab === 'dashboard' && <AdminDashboard />}
         {activeTab === 'users' && <UserManagement />}
         {activeTab === 'departments' && <DepartmentManagement />}

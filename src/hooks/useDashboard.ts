@@ -2,6 +2,19 @@ import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../lib/supabase'
 import { useAppStore } from '../stores/appStore'
 
+export interface DeptStatus {
+  id: string
+  name: string
+  color: string
+  pending: number
+  processing: number
+  done: number
+  cancelled: number
+  total: number
+  slaWarn: number
+  slaBreach: number
+}
+
 interface DashboardStats {
   totalPending: number
   totalProcessing: number
@@ -10,6 +23,7 @@ interface DashboardStats {
   avgProcessingHours: number | null
   tasksByDept: { name: string; count: number }[]
   tasksByPriority: { name: string; count: number }[]
+  deptStatuses: DeptStatus[]
   recentTasks: any[]
   slaWarnCount: number
   slaBreachCount: number
@@ -24,6 +38,7 @@ const defaultStats: DashboardStats = {
   avgProcessingHours: null,
   tasksByDept: [],
   tasksByPriority: [],
+  deptStatuses: [],
   recentTasks: [],
   slaWarnCount: 0,
   slaBreachCount: 0,
@@ -124,6 +139,22 @@ export function useDashboard() {
       slaComplianceRate = Math.round((withinSla / doneTasks.length) * 100)
     }
 
+    // Per-department status breakdown
+    const deptStatuses: DeptStatus[] = (departments || []).map((dept: any) => {
+      const deptTasks = allTasks.filter((t: any) => t.target_dept_id === dept.id)
+      const pending = deptTasks.filter((t: any) => t.status === 'pending').length
+      const processing = deptTasks.filter((t: any) => t.status === 'processing' || t.status === 'need_confirm').length
+      const done = deptTasks.filter((t: any) => t.status === 'done').length
+      const cancelled = deptTasks.filter((t: any) => t.status === 'cancelled').length
+      let slaWarn = 0, slaBreach = 0
+      deptTasks.filter((t: any) => t.status === 'pending' || t.status === 'processing' || t.status === 'need_confirm').forEach((t: any) => {
+        const elapsedMin = (Date.now() - new Date(t.created_at).getTime()) / 60000
+        if (dept.sla_escalate_minutes && elapsedMin >= dept.sla_escalate_minutes) slaBreach++
+        else if (dept.sla_warn_minutes && elapsedMin >= dept.sla_warn_minutes) slaWarn++
+      })
+      return { id: dept.id, name: dept.name, color: dept.color || '#3b82f6', pending, processing, done, cancelled, total: deptTasks.length, slaWarn, slaBreach }
+    })
+
     setStats({
       totalPending,
       totalProcessing,
@@ -132,6 +163,7 @@ export function useDashboard() {
       avgProcessingHours,
       tasksByDept,
       tasksByPriority,
+      deptStatuses,
       recentTasks: allTasks.slice(0, 10),
       slaWarnCount,
       slaBreachCount,

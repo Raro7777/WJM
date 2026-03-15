@@ -165,15 +165,15 @@ export function DepartmentManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-bold text-gray-900">부서 관리</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">부서 관리</h2>
+          <p className="text-[15px] text-slate-500 mt-1.5">
             부서 정보와 SLA(서비스 수준 목표) 기준 시간을 설정합니다.
           </p>
         </div>
         {!isEditing && (
           <button
             onClick={openAdd}
-            className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
+            className="flex items-center gap-2 px-5 py-3 text-[15px] font-medium bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
           >
             <Plus className="w-4 h-4" />
             부서 추가

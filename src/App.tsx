@@ -5,9 +5,12 @@ import { FloatingButton } from './components/widget/FloatingButton'
 import { ExpandedPanel } from './components/widget/ExpandedPanel'
 import { LoginForm } from './components/auth/LoginForm'
 import { WebLayout } from './components/web/WebLayout'
+import { WebLayoutV2 } from './components/web-v2/WebLayoutV2'
 import { WebLoginPage } from './components/web/WebLoginPage'
+import { WebLoginPageV2 } from './components/web-v2/WebLoginPageV2'
 import { TaskDetailWindow } from './components/tasks/TaskDetailWindow'
 import { ExternalRequestPage } from './components/external/ExternalRequestPage'
+import { SignupRequestPage } from './components/auth/SignupRequestPage'
 
 const isElectron = !!window.electronAPI
 const params = new URLSearchParams(window.location.search)
@@ -18,10 +21,11 @@ const taskId = params.get('taskId')
 const pathParts = window.location.pathname.split('/')
 const isExternalRequest = pathParts[1] === 'request' && pathParts[2]
 const clientSlug = isExternalRequest ? pathParts[2] : null
+const isSignupPage = window.location.pathname === '/signup'
 
 export default function App() {
   const { isAuthenticated } = useAuth()
-  const { isExpanded, setExpanded } = useAppStore()
+  const { isExpanded, setExpanded, designVersion } = useAppStore()
 
   useEffect(() => {
     if (isElectron && !viewMode) {
@@ -39,6 +43,11 @@ export default function App() {
     }
   }, [isAuthenticated, isExpanded, setExpanded])
 
+  // --- Signup request page ---
+  if (isSignupPage) {
+    return <SignupRequestPage onBack={() => { window.location.href = '/' }} />
+  }
+
   // --- External client request page ---
   if (clientSlug) {
     return <ExternalRequestPage clientSlug={clientSlug} />
@@ -51,8 +60,8 @@ export default function App() {
 
   // --- Web mode ---
   if (!isElectron) {
-    if (!isAuthenticated) return <WebLoginPage />
-    return <WebLayout />
+    if (!isAuthenticated) return designVersion === 'v2' ? <WebLoginPageV2 /> : <WebLoginPage />
+    return designVersion === 'v2' ? <WebLayoutV2 /> : <WebLayout />
   }
 
   // --- Electron widget mode ---

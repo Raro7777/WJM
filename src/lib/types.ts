@@ -50,10 +50,12 @@ export interface ExternalClient {
   name: string
   slug: string
   target_dept_id: string
+  target_dept_ids: string[]
   default_category: string
   logo_url: string | null
   description: string | null
   is_active: boolean
+  must_change_password: boolean
   created_at: string
   updated_at: string
 }

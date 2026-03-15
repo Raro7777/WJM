@@ -55,17 +55,17 @@ export function ReminderSettings() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-base font-bold text-gray-900">리마인더 알림 설정</h2>
-          <p className="text-sm text-gray-400 mt-1">
+          <h2 className="text-xl font-bold text-slate-900 tracking-tight">리마인더 알림 설정</h2>
+          <p className="text-[15px] text-slate-500 mt-1.5">
             각 단계별 알림 반복 간격을 설정합니다. 부서/업무종류별로 다르게 설정할 수 있습니다.
           </p>
         </div>
         <button
           onClick={() => setShowAdd(!showAdd)}
-          className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
+          className="flex items-center gap-2 px-5 py-3 text-[15px] font-medium bg-blue-500 text-white rounded-xl hover:bg-blue-600 transition-colors shadow-sm shadow-blue-500/20"
         >
           <Plus className="w-4 h-4" />
           추가
@@ -74,14 +74,14 @@ export function ReminderSettings() {
 
       {/* Add form */}
       {showAdd && (
-        <div className="bg-blue-50/50 rounded-xl p-6 space-y-4 border border-blue-200/50">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div className="bg-blue-50/50 rounded-xl p-6 space-y-5 border border-blue-200/50">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">부서</label>
+              <label className="block text-[14px] font-medium text-slate-600 mb-2">부서</label>
               <select
                 value={newDeptId}
                 onChange={(e) => setNewDeptId(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+                className="w-full px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
               >
                 <option value="">전체 (기본값)</option>
                 {departments.map((d) => (
@@ -90,11 +90,11 @@ export function ReminderSettings() {
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-600 mb-1.5">업무 종류</label>
+              <label className="block text-[14px] font-medium text-slate-600 mb-2">업무 종류</label>
               <select
                 value={newCategory}
                 onChange={(e) => setNewCategory(e.target.value)}
-                className="w-full px-3 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+                className="w-full px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
               >
                 <option value="">전체</option>
                 {Object.entries(CATEGORY_LABELS).map(([key, label]) => (

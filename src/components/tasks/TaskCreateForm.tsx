@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useTasks } from '../../hooks/useTasks'
 import { supabase } from '../../lib/supabase'
-import { CATEGORY_LABELS, PRIORITY_LABELS } from '../../lib/constants'
+import { CATEGORY_LABELS } from '../../lib/constants'
 import { FileAttachment, uploadPendingFiles } from '../common/FileAttachment'
 import type { Department, Task } from '../../lib/types'
 
@@ -20,8 +20,7 @@ export function TaskCreateForm({ onBack }: TaskCreateFormProps) {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   const [targetDeptId, setTargetDeptId] = useState('')
-  const [category, setCategory] = useState('general')
-  const [priority, setPriority] = useState<Task['priority']>('normal')
+  const [category, setCategory] = useState('reception')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [fileUrls, setFileUrls] = useState<string[]>([])
@@ -71,7 +70,7 @@ export function TaskCreateForm({ onBack }: TaskCreateFormProps) {
     setError('')
     setLoading(true)
     try {
-      const result = await createTask({ title, content, target_dept_id: targetDeptId, category, priority })
+      const result = await createTask({ title, content, target_dept_id: targetDeptId, category, priority: 'normal' })
 
       // Upload pending files if any
       if (result?.id && pendingFiles.length > 0) {
@@ -103,6 +102,23 @@ export function TaskCreateForm({ onBack }: TaskCreateFormProps) {
 
       <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto px-5 py-5 space-y-5">
         <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-2 tracking-wide">업무처리 통신사 혹은 부서</label>
+          <select
+            value={targetDeptId}
+            onChange={(e) => setTargetDeptId(e.target.value)}
+            className="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50"
+            disabled={deptLoading}
+          >
+            <option value="">{deptLoading ? '부서 불러오는 중...' : '부서를 선택하세요'}</option>
+            {departments.map((dept) => (
+              <option key={dept.id} value={dept.id}>
+                {dept.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
           <div className="flex items-center justify-between mb-2">
             <label className="text-xs font-semibold text-gray-500 tracking-wide">제목</label>
             <span className={`text-[10px] ${title.length > TITLE_MAX ? 'text-red-500 font-semibold' : 'text-gray-300'}`}>
@@ -118,6 +134,26 @@ export function TaskCreateForm({ onBack }: TaskCreateFormProps) {
             placeholder="업무 요청 제목"
             required
           />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 mb-2 tracking-wide">업무 종류</label>
+          <div className="flex flex-wrap gap-2">
+            {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
+              <button
+                key={key}
+                type="button"
+                onClick={() => setCategory(key)}
+                className={`px-4 py-2 text-xs font-medium rounded-xl border transition-all ${
+                  category === key
+                    ? 'border-blue-400 bg-blue-50 text-blue-600 shadow-sm shadow-blue-500/10'
+                    : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-500'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>
@@ -144,63 +180,6 @@ export function TaskCreateForm({ onBack }: TaskCreateFormProps) {
           onPendingFilesChange={setPendingFiles}
           pendingFilesList={pendingFiles}
         />
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-2 tracking-wide">처리 부서</label>
-          <select
-            value={targetDeptId}
-            onChange={(e) => setTargetDeptId(e.target.value)}
-            className="w-full px-4 py-3 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 bg-gray-50/50"
-            disabled={deptLoading}
-          >
-            <option value="">{deptLoading ? '부서 불러오는 중...' : '부서를 선택하세요'}</option>
-            {departments.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.name}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-2 tracking-wide">업무 종류</label>
-          <div className="flex flex-wrap gap-2">
-            {Object.entries(CATEGORY_LABELS).map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setCategory(key)}
-                className={`px-4 py-2 text-xs font-medium rounded-xl border transition-all ${
-                  category === key
-                    ? 'border-blue-400 bg-blue-50 text-blue-600 shadow-sm shadow-blue-500/10'
-                    : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-500'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-gray-500 mb-2 tracking-wide">우선순위</label>
-          <div className="flex gap-2">
-            {Object.entries(PRIORITY_LABELS).map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setPriority(key)}
-                className={`flex-1 py-2 text-xs font-medium rounded-xl border transition-all ${
-                  priority === key
-                    ? 'border-blue-400 bg-blue-50 text-blue-600 shadow-sm shadow-blue-500/10'
-                    : 'border-gray-200 text-gray-400 hover:border-gray-300 hover:text-gray-500'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
 
         {error && (
           <div className="text-sm text-red-600 bg-red-50 px-4 py-2.5 rounded-xl border border-red-100">

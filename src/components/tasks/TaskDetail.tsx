@@ -29,8 +29,8 @@ export function TaskDetail({ task, onBack }: TaskDetailProps) {
     Array.isArray(task.file_urls) ? task.file_urls : []
   )
 
-  const isAdmin = user?.role === 'admin'
-  const isHandler = user?.role === 'handler' || isAdmin
+  const isAdmin = user?.role === 'super_admin' || user?.role === 'site_admin'
+  const isHandler = user?.role === 'dept_manager' || user?.role === 'dept_sub_manager' || isAdmin
   const isRequester = user?.id === task.requester_id
 
   // Handler actions
@@ -46,7 +46,7 @@ export function TaskDetail({ task, onBack }: TaskDetailProps) {
   useEffect(() => {
     if (!isAdmin || !showReassign) return
     supabase.from('profiles').select('*')
-      .in('role', ['handler', 'admin'])
+      .in('role', ['super_admin', 'site_admin', 'dept_manager', 'dept_sub_manager'])
       .then(({ data }) => {
         if (data) setHandlers(data as Profile[])
       })
@@ -203,7 +203,11 @@ export function TaskDetail({ task, onBack }: TaskDetailProps) {
                     </div>
                     <div>
                       <p className="text-sm font-medium text-gray-700">{h.name}</p>
-                      <p className="text-[10px] text-gray-400">{h.role === 'admin' ? '관리자' : '담당자'}</p>
+                      <p className="text-[10px] text-gray-400">{
+                        h.role === 'super_admin' ? '최고관리자' :
+                        h.role === 'site_admin' ? '사이트관리자' :
+                        h.role === 'dept_manager' ? '부서담당' : '부서부담당'
+                      }</p>
                     </div>
                   </button>
                 ))}

@@ -19,15 +19,17 @@ export function useTasks() {
       let query = supabase
         .from('tasks')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('created_at', { ascending: true })
 
       // Filter based on user role
-      if (user.role === 'user') {
+      if (user.role === 'partner') {
+        // 협력점: 자신이 요청한 업무만
         query = query.eq('requester_id', user.id)
-      } else if (user.role === 'handler') {
+      } else if (user.role === 'dept_manager' || user.role === 'dept_sub_manager') {
+        // 부서담당/부서부담당: 자신이 요청한 업무 + 소속 부서 업무
         query = query.or(`requester_id.eq.${user.id},target_dept_id.eq.${user.department_id}`)
       }
-      // admin sees all
+      // super_admin, site_admin: 전체 업무 조회
 
       const { data, error: fetchError } = await query
       if (fetchError) {

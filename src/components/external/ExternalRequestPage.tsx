@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../../lib/supabase'
-import { CATEGORY_LABELS, PRIORITY_LABELS, STATUS_LABELS, STATUS_COLORS } from '../../lib/constants'
+import { CATEGORY_LABELS, STATUS_LABELS, STATUS_COLORS } from '../../lib/constants'
 import { CommentSection } from '../common/CommentSection'
 import type { ExternalClient, Task, TaskComment } from '../../lib/types'
-import { ChevronRight, ArrowLeft, Lock } from 'lucide-react'
+import { ChevronRight, ArrowLeft, Lock, KeyRound } from 'lucide-react'
 
 interface ExternalRequestPageProps {
   clientSlug: string
@@ -12,6 +12,7 @@ interface ExternalRequestPageProps {
 export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
   const [client, setClient] = useState<ExternalClient | null>(null)
   const [authenticated, setAuthenticated] = useState(false)
+  const [showChangePassword, setShowChangePassword] = useState(false)
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
   const [loading, setLoading] = useState(true)
@@ -54,7 +55,7 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
       .from('tasks')
       .select('*')
       .eq('client_id', client.id)
-      .order('created_at', { ascending: false })
+      .order('created_at', { ascending: true })
     if (data) setTasks(data as Task[])
   }
 
@@ -66,7 +67,11 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
       password: password,
     })
     if (data) {
-      setAuthenticated(true)
+      if (client?.must_change_password) {
+        setShowChangePassword(true)
+      } else {
+        setAuthenticated(true)
+      }
     } else {
       setAuthError('비밀번호가 올바르지 않습니다')
     }
@@ -88,6 +93,21 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
           <p className="text-sm text-gray-500">유효하지 않은 링크입니다.</p>
         </div>
       </div>
+    )
+  }
+
+  if (!authenticated && showChangePassword) {
+    return (
+      <ChangePasswordScreen
+        clientSlug={clientSlug}
+        clientName={client.name}
+        currentPassword={password}
+        onChanged={() => {
+          setShowChangePassword(false)
+          setAuthenticated(true)
+          setClient({ ...client, must_change_password: false })
+        }}
+      />
     )
   }
 
@@ -235,15 +255,32 @@ function ExternalTaskForm({ client, onSubmitted }: {
   client: ExternalClient
   onSubmitted: () => void
 }) {
+  const deptIds = client.target_dept_ids?.length > 0 ? client.target_dept_ids : (client.target_dept_id ? [client.target_dept_id] : [])
+  const hasMultipleDepts = deptIds.length > 1
+
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
-  const [category, setCategory] = useState(client.default_category)
-  const [priority, setPriority] = useState('normal')
+  const [category, setCategory] = useState(client.default_category || 'reception')
+  const [targetDeptId, setTargetDeptId] = useState(hasMultipleDepts ? '' : (deptIds[0] || ''))
+  const [departments, setDepartments] = useState<{ id: string; name: string }[]>([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
+  useEffect(() => {
+    if (!hasMultipleDepts) return
+    const fetchDepts = async () => {
+      const { data } = await supabase.from('departments').select('id, name').in('id', deptIds).order('name')
+      if (data) setDepartments(data)
+    }
+    fetchDepts()
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (hasMultipleDepts && !targetDeptId) {
+      setError('부서를 선택해주세요')
+      return
+    }
     setLoading(true)
     setError('')
     try {
@@ -251,8 +288,8 @@ function ExternalTaskForm({ client, onSubmitted }: {
         title,
         content,
         category,
-        priority,
-        target_dept_id: client.target_dept_id,
+        priority: 'normal',
+        target_dept_id: targetDeptId || deptIds[0],
         client_id: client.id,
         requester_name: client.name,
         status: 'pending',
@@ -271,6 +308,22 @@ function ExternalTaskForm({ client, onSubmitted }: {
       <h2 className="text-base font-bold text-gray-900 mb-4 sm:mb-5">새 업무 요청</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+        {hasMultipleDepts && (
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 mb-1.5">업무처리 부서</label>
+            <select
+              value={targetDeptId}
+              onChange={(e) => setTargetDeptId(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 text-sm bg-gray-50/50"
+            >
+              <option value="">부서를 선택하세요</option>
+              {departments.map((d) => (
+                <option key={d.id} value={d.id}>{d.name}</option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div>
           <label className="block text-sm font-semibold text-gray-600 mb-1.5">제목</label>
           <input
@@ -279,18 +332,6 @@ function ExternalTaskForm({ client, onSubmitted }: {
             onChange={(e) => setTitle(e.target.value)}
             className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 text-sm bg-gray-50/50 placeholder:text-gray-300"
             placeholder="업무 요청 제목"
-            required
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-semibold text-gray-600 mb-1.5">내용</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 resize-none text-sm bg-gray-50/50 placeholder:text-gray-300"
-            rows={5}
-            placeholder="업무 요청 상세 내용"
             required
           />
         </div>
@@ -316,23 +357,15 @@ function ExternalTaskForm({ client, onSubmitted }: {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-gray-600 mb-1.5">우선순위</label>
-          <div className="grid grid-cols-4 gap-2">
-            {Object.entries(PRIORITY_LABELS).map(([key, label]) => (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setPriority(key)}
-                className={`py-2 text-xs font-medium rounded-xl border transition-all ${
-                  priority === key
-                    ? 'border-blue-400 bg-blue-50 text-blue-600 shadow-sm shadow-blue-500/10'
-                    : 'border-gray-200 text-gray-400 hover:border-gray-300'
-                }`}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
+          <label className="block text-sm font-semibold text-gray-600 mb-1.5">내용</label>
+          <textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400 resize-none text-sm bg-gray-50/50 placeholder:text-gray-300"
+            rows={5}
+            placeholder="업무 요청 상세 내용"
+            required
+          />
         </div>
 
         {error && (
@@ -455,6 +488,108 @@ function ExternalTaskDetail({ task, clientName, onTaskUpdated }: {
             onSendComment={handleSendComment}
           />
         </div>
+      </div>
+    </div>
+  )
+}
+
+function ChangePasswordScreen({ clientSlug, clientName, currentPassword, onChanged }: {
+  clientSlug: string
+  clientName: string
+  currentPassword: string
+  onChanged: () => void
+}) {
+  const [newPw, setNewPw] = useState('')
+  const [confirmPw, setConfirmPw] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (newPw.length < 4) {
+      setError('비밀번호는 4자 이상이어야 합니다')
+      return
+    }
+    if (newPw !== confirmPw) {
+      setError('비밀번호가 일치하지 않습니다')
+      return
+    }
+    if (newPw === currentPassword) {
+      setError('기존 비밀번호와 다른 비밀번호를 입력해주세요')
+      return
+    }
+
+    setLoading(true)
+    try {
+      const { data } = await supabase.rpc('change_client_password', {
+        client_slug: clientSlug,
+        old_password: currentPassword,
+        new_password: newPw,
+      })
+      if (data) {
+        onChanged()
+      } else {
+        setError('비밀번호 변경에 실패했습니다')
+      }
+    } catch {
+      setError('비밀번호 변경에 실패했습니다')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-100 px-4">
+      <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-sm">
+        <div className="text-center mb-6">
+          <div className="w-14 sm:w-16 h-14 sm:h-16 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg shadow-amber-500/25">
+            <KeyRound className="w-7 sm:w-8 h-7 sm:h-8 text-white" />
+          </div>
+          <h1 className="text-lg sm:text-xl font-bold text-gray-900">{clientName}</h1>
+          <p className="text-sm text-gray-500 mt-1">비밀번호 변경이 필요합니다</p>
+          <p className="text-xs text-gray-400 mt-1">보안을 위해 새 비밀번호를 설정해주세요</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 mb-1.5">새 비밀번호</label>
+            <input
+              type="password"
+              value={newPw}
+              onChange={(e) => setNewPw(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 text-sm bg-gray-50/50 placeholder:text-gray-300"
+              placeholder="4자 이상 입력"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-semibold text-gray-600 mb-1.5">새 비밀번호 확인</label>
+            <input
+              type="password"
+              value={confirmPw}
+              onChange={(e) => setConfirmPw(e.target.value)}
+              className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/30 focus:border-amber-400 text-sm bg-gray-50/50 placeholder:text-gray-300"
+              placeholder="비밀번호 재입력"
+              required
+            />
+          </div>
+
+          {error && (
+            <div className="text-sm text-red-600 bg-red-50 px-4 py-2.5 rounded-xl border border-red-100">
+              {error}
+            </div>
+          )}
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 bg-gradient-to-r from-amber-500 to-orange-500 text-white font-semibold rounded-xl hover:from-amber-600 hover:to-orange-600 disabled:opacity-50 transition-all shadow-md shadow-amber-500/25"
+          >
+            {loading ? '변경 중...' : '비밀번호 변경'}
+          </button>
+        </form>
       </div>
     </div>
   )

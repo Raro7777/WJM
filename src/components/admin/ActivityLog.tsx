@@ -131,18 +131,18 @@ export function ActivityLog() {
   if (loading) return <LoadingSpinner />
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
       <div>
-        <h2 className="text-base font-bold text-gray-900">활동 로그</h2>
-        <p className="text-sm text-gray-400 mt-1">
+        <h2 className="text-xl font-bold text-slate-900 tracking-tight">활동 로그</h2>
+        <p className="text-[15px] text-slate-500 mt-1.5">
           업무 상태 변경 및 주요 이벤트 기록을 확인합니다.
         </p>
       </div>
 
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="flex gap-1.5 bg-gray-100 rounded-xl p-1">
+      <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex gap-2 bg-slate-100 rounded-xl p-1.5">
           {([
             ['today', '오늘'],
             ['week', '1주'],
@@ -152,10 +152,10 @@ export function ActivityLog() {
             <button
               key={key}
               onClick={() => { setDateRange(key); setVisibleCount(PAGE_SIZE) }}
-              className={`px-3 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+              className={`px-4 py-2 text-[14px] font-medium rounded-lg transition-colors ${
                 dateRange === key
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
+                  ? 'bg-white text-slate-900 shadow-sm'
+                  : 'text-slate-500 hover:text-slate-700'
               }`}
             >
               {label}
@@ -165,7 +165,7 @@ export function ActivityLog() {
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setVisibleCount(PAGE_SIZE) }}
-          className="px-3 py-2 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
+          className="px-4 py-3 text-[15px] border border-slate-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/30 focus:border-blue-400"
         >
           <option value="">모든 상태</option>
           {Object.entries(STATUS_LABELS).map(([key, label]) => (
@@ -173,26 +173,26 @@ export function ActivityLog() {
           ))}
         </select>
 
-        <div className="text-sm text-gray-400 flex items-center ml-auto">
+        <div className="text-[15px] text-slate-500 flex items-center ml-auto">
           총 {activities.length}건
         </div>
       </div>
 
       {/* Timeline */}
       {visibleActivities.length === 0 ? (
-        <div className="text-center py-12 text-sm text-gray-300">
+        <div className="text-center py-16 text-[15px] text-slate-400">
           해당 기간에 활동 기록이 없습니다
         </div>
       ) : (
-        <div className="space-y-1">
+        <div className="space-y-2">
           {visibleActivities.map((entry, index) => (
             <div
               key={`${entry.id}-${index}`}
-              className="flex items-start gap-3.5 px-4 py-3 rounded-xl hover:bg-gray-50 transition-colors"
+              className="flex items-start gap-4 px-5 py-4 rounded-xl hover:bg-slate-50 transition-colors"
             >
               {/* Status dot */}
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${getActivityIcon(entry.task.status)}`}>
-                <span className="text-[10px] font-bold">
+              <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 mt-0.5 ${getActivityIcon(entry.task.status)}`}>
+                <span className="text-xs font-bold">
                   {entry.task.status === 'pending' ? '!' :
                    entry.task.status === 'processing' ? '▶' :
                    entry.task.status === 'done' ? '✓' :
@@ -202,20 +202,20 @@ export function ActivityLog() {
 
               {/* Content */}
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2 mb-0.5">
-                  <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${STATUS_COLORS[entry.task.status]}`}>
+                <div className="flex items-center gap-2.5 mb-1">
+                  <span className={`px-2.5 py-1 text-[12px] font-semibold rounded-lg ${STATUS_COLORS[entry.task.status]}`}>
                     {STATUS_LABELS[entry.task.status]}
                   </span>
-                  <span className="text-[10px] text-gray-300">
+                  <span className="text-[12px] text-slate-400">
                     {PRIORITY_LABELS[entry.task.priority]}
                   </span>
                 </div>
-                <p className="text-sm font-medium text-gray-900 truncate">{entry.task.title}</p>
-                <p className="text-xs text-gray-400 mt-0.5">{getActivityMessage(entry)}</p>
+                <p className="text-[15px] font-medium text-slate-900 truncate">{entry.task.title}</p>
+                <p className="text-[14px] text-slate-500 mt-0.5">{getActivityMessage(entry)}</p>
               </div>
 
               {/* Time */}
-              <div className="text-[11px] text-gray-300 shrink-0 mt-1">
+              <div className="text-[13px] text-slate-400 shrink-0 mt-1">
                 {formatTime(entry.timestamp)}
               </div>
             </div>
@@ -223,10 +223,10 @@ export function ActivityLog() {
 
           {/* Load more */}
           {visibleCount < activities.length && (
-            <div className="text-center pt-4">
+            <div className="text-center pt-5">
               <button
                 onClick={() => setVisibleCount((prev) => prev + PAGE_SIZE)}
-                className="px-4 py-2 text-sm text-blue-500 hover:bg-blue-50 rounded-xl transition-colors font-medium"
+                className="px-5 py-2.5 text-[15px] text-blue-500 hover:bg-blue-50 rounded-xl transition-colors font-medium"
               >
                 더 보기 ({activities.length - visibleCount}건 남음)
               </button>

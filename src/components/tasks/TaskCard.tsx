@@ -15,42 +15,42 @@ export function TaskCard({ task, onClick, department }: TaskCardProps) {
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-5 py-4 hover:bg-gray-50/80 transition-colors group ${
-        slaStatus === 'escalate' ? 'bg-red-50/30' : slaStatus === 'warn' ? 'bg-amber-50/30' : ''
+      className={`w-full text-left px-5 py-4.5 hover:bg-slate-50/90 transition-colors group ${
+        slaStatus === 'escalate' ? 'bg-red-50/40' : slaStatus === 'warn' ? 'bg-amber-50/40' : ''
       }`}
     >
-      <div className="flex items-start justify-between gap-3">
+      <div className="flex items-start justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-2">
             {slaStatus && (
-              <AlertTriangle className={`w-3.5 h-3.5 shrink-0 ${
+              <AlertTriangle className={`w-4 h-4 shrink-0 ${
                 slaStatus === 'escalate' ? 'text-red-500' : 'text-amber-500'
               }`} />
             )}
-            <p className="text-sm font-semibold text-gray-900 truncate leading-relaxed">{task.title}</p>
+            <p className="text-[15px] font-semibold text-slate-900 truncate leading-[1.5]">{task.title}</p>
           </div>
-          <p className="text-xs text-gray-400 truncate mt-1 leading-relaxed">{task.content}</p>
+          <p className="text-[13px] text-slate-500 truncate mt-1.5 leading-relaxed">{task.content}</p>
         </div>
-        <span className={`px-2 py-1 text-[10px] font-semibold rounded-md ${STATUS_COLORS[task.status]} shrink-0`}>
+        <span className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg ${STATUS_COLORS[task.status]} shrink-0`}>
           {STATUS_LABELS[task.status]}
         </span>
       </div>
-      <div className="flex items-center gap-2 mt-2.5">
-        <span className={`px-2 py-0.5 text-[10px] font-medium rounded-md ${CATEGORY_COLORS[task.category] || 'bg-gray-100 text-gray-500'}`}>
+      <div className="flex items-center gap-2.5 mt-3 flex-wrap">
+        <span className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${CATEGORY_COLORS[task.category] || 'bg-slate-100 text-slate-600'}`}>
           {CATEGORY_LABELS[task.category] || task.category}
         </span>
-        <span className={`px-2 py-0.5 text-[10px] font-medium rounded-md ${PRIORITY_COLORS[task.priority]}`}>
+        <span className={`px-2.5 py-1 text-[11px] font-medium rounded-lg ${PRIORITY_COLORS[task.priority]}`}>
           {PRIORITY_LABELS[task.priority]}
         </span>
         {slaStatus && (
-          <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${
+          <span className={`px-2.5 py-1 text-[11px] font-semibold rounded-lg ${
             slaStatus === 'escalate' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'
           }`}>
             {slaStatus === 'escalate' ? 'SLA 초과' : 'SLA 경고'}
           </span>
         )}
-        <span className="flex items-center gap-1 text-[10px] text-gray-300 ml-auto">
-          <Clock className="w-3 h-3" />
+        <span className="flex items-center gap-1 text-[12px] text-slate-400 ml-auto">
+          <Clock className="w-3.5 h-3.5" />
           {timeAgo}
         </span>
       </div>
