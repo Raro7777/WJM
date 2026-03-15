@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { CATEGORY_LABELS, STATUS_LABELS, STATUS_COLORS } from '../../lib/constants'
 import { CommentSection } from '../common/CommentSection'
 import type { ExternalClient, Task, TaskComment } from '../../lib/types'
-import { ChevronRight, ArrowLeft, Lock, KeyRound, Plus, Clock, Loader2, CheckCircle, XCircle, ClipboardList, AlertTriangle } from 'lucide-react'
+import { ChevronRight, ArrowLeft, Lock, KeyRound, Plus, Clock, Loader2, CheckCircle, XCircle, ClipboardList, AlertTriangle, Star } from 'lucide-react'
 
 interface ExternalRequestPageProps {
   clientSlug: string
@@ -689,6 +689,11 @@ function ExternalTaskDetail({ task, clientName, onTaskUpdated }: {
           </div>
         )}
 
+        {/* Review for completed tasks */}
+        {task.status === 'done' && (
+          <ExternalTaskReview task={task} onSubmitted={onTaskUpdated} />
+        )}
+
         {/* Comments */}
         <div className="border-t border-slate-100 pt-5">
           <CommentSection
@@ -699,6 +704,84 @@ function ExternalTaskDetail({ task, clientName, onTaskUpdated }: {
           />
         </div>
       </div>
+    </div>
+  )
+}
+
+function ExternalTaskReview({ task, onSubmitted }: { task: Task; onSubmitted: () => void }) {
+  const [rating, setRating] = useState(task.review_rating ?? 0)
+  const [hoverRating, setHoverRating] = useState(0)
+  const [comment, setComment] = useState(task.review_comment ?? '')
+  const [loading, setLoading] = useState(false)
+  const [submitted, setSubmitted] = useState(task.review_rating !== null)
+
+  const displayRating = hoverRating || rating
+
+  const handleSubmit = async () => {
+    setLoading(true)
+    try {
+      await supabase.from('tasks').update({
+        review_rating: rating,
+        review_comment: comment || null,
+        reviewed_at: new Date().toISOString(),
+      } as any).eq('id', task.id)
+      setSubmitted(true)
+      onSubmitted()
+    } catch (err) {
+      console.error('Review error:', err)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  if (submitted) {
+    const showRating = submitted ? rating : task.review_rating!
+    return (
+      <div className="bg-amber-50/60 rounded-xl p-5 border border-amber-100/60">
+        <p className="text-[11px] font-semibold text-amber-700 mb-2">처리 평가</p>
+        <div className="flex items-center gap-1 mb-1.5">
+          {[1, 2, 3, 4, 5].map(i => (
+            <Star key={i} className={`w-5 h-5 ${i <= showRating ? 'text-amber-400 fill-amber-400' : 'text-slate-200'}`} />
+          ))}
+          <span className="text-sm font-bold text-slate-700 ml-2">{showRating}점</span>
+        </div>
+        {comment && <p className="text-sm text-slate-600 leading-relaxed mt-2">{comment}</p>}
+      </div>
+    )
+  }
+
+  return (
+    <div className="bg-amber-50/60 rounded-xl p-5 border border-amber-100/60 space-y-3">
+      <p className="text-[11px] font-semibold text-amber-700">처리에 대한 평가를 남겨주세요</p>
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map(i => (
+          <button
+            key={i}
+            type="button"
+            onClick={() => setRating(i === rating ? 0 : i)}
+            onMouseEnter={() => setHoverRating(i)}
+            onMouseLeave={() => setHoverRating(0)}
+            className="p-0.5 transition-transform hover:scale-110"
+          >
+            <Star className={`w-7 h-7 transition-colors ${i <= displayRating ? 'text-amber-400 fill-amber-400' : 'text-slate-200 hover:text-amber-200'}`} />
+          </button>
+        ))}
+        {rating > 0 && <span className="text-sm font-bold text-slate-600 ml-2">{rating}점</span>}
+      </div>
+      <textarea
+        value={comment}
+        onChange={e => setComment(e.target.value)}
+        className="w-full px-4 py-3 text-sm border border-amber-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-400 resize-none bg-white placeholder:text-slate-300"
+        rows={2}
+        placeholder="처리에 대한 의견을 남겨주세요 (선택)"
+      />
+      <button
+        onClick={handleSubmit}
+        disabled={loading}
+        className="px-5 py-2.5 bg-amber-500 text-white text-sm font-semibold rounded-xl hover:bg-amber-600 disabled:opacity-50 transition-colors shadow-sm shadow-amber-500/20"
+      >
+        {loading ? '제출 중...' : '평가 제출'}
+      </button>
     </div>
   )
 }

@@ -43,6 +43,9 @@ export interface Task {
   updated_at: string
   processed_at: string | null
   confirmed_at: string | null
+  review_rating: number | null
+  review_comment: string | null
+  reviewed_at: string | null
 }
 
 export interface ExternalClient {

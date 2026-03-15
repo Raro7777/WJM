@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import { Users, Building2, TrendingUp, AlertTriangle, BarChart3 } from 'lucide-react'
+import { Users, Building2, TrendingUp, AlertTriangle, BarChart3, Star } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
 import { STATUS_LABELS, PRIORITY_LABELS } from '../../lib/constants'
 import { LoadingSpinner } from '../common/LoadingSpinner'
@@ -55,6 +55,13 @@ export function AdminDashboard() {
         avgHours = Math.round((totalMs / completedTasks.length / 3600000) * 10) / 10
       }
 
+      // Review stats
+      const reviewedTasks = assigned.filter((t) => t.review_rating !== null)
+      const avgRating = reviewedTasks.length > 0
+        ? Math.round((reviewedTasks.reduce((sum, t) => sum + (t.review_rating ?? 0), 0) / reviewedTasks.length) * 10) / 10
+        : null
+      const reviewCount = reviewedTasks.length
+
       return {
         id: h.id,
         name: h.name || '이름 없음',
@@ -63,6 +70,8 @@ export function AdminDashboard() {
         done,
         total,
         avgHours,
+        avgRating,
+        reviewCount,
       }
     }).sort((a, b) => b.done - a.done)
   }, [tasks, profiles])
@@ -197,9 +206,18 @@ export function AdminDashboard() {
                         style={{ width: h.total > 0 ? `${(h.done / Math.max(h.total, 1)) * 100}%` : '0%' }}
                       />
                     </div>
-                    {h.avgHours !== null && (
-                      <p className="text-[12px] text-slate-400 mt-1">평균 {h.avgHours}시간</p>
-                    )}
+                    <div className="flex items-center gap-3 mt-1">
+                      {h.avgHours !== null && (
+                        <p className="text-[12px] text-slate-400">평균 {h.avgHours}시간</p>
+                      )}
+                      {h.avgRating !== null && (
+                        <div className="flex items-center gap-1">
+                          <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                          <span className="text-[12px] font-semibold text-amber-600">{h.avgRating}</span>
+                          <span className="text-[11px] text-slate-400">({h.reviewCount}건)</span>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               ))

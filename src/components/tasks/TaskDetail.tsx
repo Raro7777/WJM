@@ -8,6 +8,7 @@ import { STATUS_LABELS, STATUS_COLORS, PRIORITY_LABELS, PRIORITY_COLORS, CATEGOR
 import { ConfirmDialog } from '../common/ConfirmDialog'
 import { CommentSection } from '../common/CommentSection'
 import { FileAttachment } from '../common/FileAttachment'
+import { TaskReview } from '../common/TaskReview'
 import type { Task, Profile } from '../../lib/types'
 
 interface TaskDetailProps {
@@ -297,6 +298,17 @@ export function TaskDetail({ task, onBack }: TaskDetailProps) {
               확인 완료 (처리 재개)
             </button>
           </div>
+        )}
+
+        {/* Review section for completed tasks */}
+        {task.status === 'done' && (
+          <TaskReview
+            taskId={task.id}
+            existingRating={task.review_rating}
+            existingComment={task.review_comment}
+            reviewedAt={task.reviewed_at}
+            canReview={isRequester && task.review_rating === null}
+          />
         )}
 
         {actionError && (
