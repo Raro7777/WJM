@@ -1,0 +1,17 @@
+appId: com.wjm.taskwidget
+productName: WJM
+directories:
+  buildResources: resources
+  output: release
+files:
+  - dist-electron
+  - dist
+win:
+  target:
+    - nsis
+  signAndEditExecutable: false
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  deleteAppDataOnUninstall: false

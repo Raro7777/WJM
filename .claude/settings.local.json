@@ -1,0 +1,33 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__65d05d56-b2ad-4d1a-a9b6-78395bab413c__list_organizations",
+      "Bash(npm init:*)",
+      "Bash(npm install:*)",
+      "Bash(wmic logicaldisk:*)",
+      "Bash(powershell -c \"Get-PSDrive C | Select-Object Used,Free\")",
+      "Bash(npm cache:*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx vite:*)",
+      "mcp__65d05d56-b2ad-4d1a-a9b6-78395bab413c__list_extensions",
+      "Bash(npx electron-builder:*)",
+      "Bash(npm run:*)",
+      "Bash(find /c/Users/1080ti/WJM/src -type f \\\\\\(-name *.tsx -o -name *.ts -o -name *.css \\\\\\))",
+      "Bash(find /c/Users/1080ti/WJM -maxdepth 1 -type f -name *.ts -o -name *.js -o -name *.json -o -name *.yml -o -name *.yaml -o -name .env* -o -name postcss* -o -name tailwind* -o -name eslint* -o -name jest* -o -name vitest*)",
+      "Bash(find /c/Users/1080ti/WJM/src -type f -name *.ts -o -name *.tsx -o -name *.test.* -o -name *.spec.*)",
+      "Bash(find /c/Users/1080ti/WJM/src/components -name \"*.tsx\" -exec wc -l {} +)",
+      "Bash(grep -r \"CSP\\\\|Content-Security-Policy\\\\|helmet\\\\|security\" /c/Users/1080ti/WJM/src --include=*.ts --include=*.tsx)",
+      "Bash(grep -n \"catch\\\\|try\" /c/Users/1080ti/WJM/src/hooks/*.ts)",
+      "Bash(ls -la /c/Users/1080ti/WJM/dist*)",
+      "Bash(find dist:*)",
+      "Bash(wc -c /c/Users/1080ti/WJM/dist/assets/*.js /c/Users/1080ti/WJM/dist/assets/*.css)",
+      "Bash(find /c/Users/1080ti/WJM/src -type f \\\\\\(-name *.ts -o -name *.tsx \\\\\\))",
+      "Bash(grep -r \"role.*admin\\\\|admin.*role\" /c/Users/1080ti/WJM/src --include=*.ts --include=*.tsx)",
+      "Bash(grep -r \"role.*==\\\\|role.*===\\\\|role.*!=\\\\|role.*in\\\\|role.*includes\" /c/Users/1080ti/WJM/src --include=*.ts --include=*.tsx)",
+      "Bash(find /c/Users/1080ti/WJM -type f \\\\\\(-name *.md -o -name *.sql \\\\\\))",
+      "Bash(find /c/Users/1080ti/WJM -maxdepth 2 -type f \\\\\\(-name *.md -o -name *.txt -o -name schema* \\\\\\))",
+      "Bash(ls -la /c/Users/1080ti/WJM/.env*)",
+      "Bash(grep -r \"localhost\\\\|127.0.0.1\\\\|http://\" /c/Users/1080ti/WJM/src --include=*.ts --include=*.tsx)"
+    ]
+  }
+}
