@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase'
 import { CATEGORY_LABELS, STATUS_LABELS, STATUS_COLORS } from '../../lib/constants'
 import { CommentSection } from '../common/CommentSection'
 import type { ExternalClient, Task, TaskComment } from '../../lib/types'
-import { ChevronRight, ArrowLeft, Lock, KeyRound } from 'lucide-react'
+import { ChevronRight, ArrowLeft, Lock, KeyRound, Plus, Clock, Loader2, CheckCircle, XCircle, ClipboardList, AlertTriangle } from 'lucide-react'
 
 interface ExternalRequestPageProps {
   clientSlug: string
@@ -16,7 +16,7 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
   const [password, setPassword] = useState('')
   const [authError, setAuthError] = useState('')
   const [loading, setLoading] = useState(true)
-  const [view, setView] = useState<'list' | 'create' | 'detail'>('list')
+  const [view, setView] = useState<'dashboard' | 'list' | 'create' | 'detail'>('dashboard')
   const [tasks, setTasks] = useState<Task[]>([])
   const [selectedTask, setSelectedTask] = useState<Task | null>(null)
 
@@ -161,9 +161,9 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
       <header className="bg-white border-b border-gray-200 px-4 sm:px-6 py-3 sm:py-4 sticky top-0 z-10">
         <div className="max-w-3xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-            {view !== 'list' && (
+            {view !== 'dashboard' && (
               <button
-                onClick={() => { setView('list'); setSelectedTask(null) }}
+                onClick={() => { setView('dashboard'); setSelectedTask(null) }}
                 className="p-1.5 hover:bg-gray-100 rounded-lg shrink-0"
               >
                 <ArrowLeft className="w-5 h-5 text-gray-600" />
@@ -186,6 +186,14 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
       </header>
 
       <div className="max-w-3xl mx-auto p-4 sm:p-6">
+        {view === 'dashboard' && (
+          <ExternalDashboard
+            client={client}
+            tasks={tasks}
+            onViewAll={() => setView('list')}
+            onSelectTask={(task) => { setSelectedTask(task); setView('detail') }}
+          />
+        )}
         {view === 'list' && (
           <ExternalTaskList
             tasks={tasks}
@@ -195,7 +203,7 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
         {view === 'create' && (
           <ExternalTaskForm
             client={client}
-            onSubmitted={() => { setView('list'); fetchTasks() }}
+            onSubmitted={() => { setView('dashboard'); fetchTasks() }}
           />
         )}
         {view === 'detail' && selectedTask && (
@@ -206,11 +214,201 @@ export function ExternalRequestPage({ clientSlug }: ExternalRequestPageProps) {
           />
         )}
       </div>
+
+      {/* Floating action button */}
+      {view === 'dashboard' && (
+        <button
+          onClick={() => setView('create')}
+          className="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-full shadow-lg shadow-blue-500/30 hover:from-blue-600 hover:to-blue-700 transition-all flex items-center justify-center hover:scale-105 active:scale-95 z-20"
+          title="새 요청"
+        >
+          <Plus className="w-6 h-6" />
+        </button>
+      )}
     </div>
   )
 }
 
 // --- Sub Components ---
+
+function ExternalDashboard({ client, tasks, onViewAll, onSelectTask }: {
+  client: ExternalClient
+  tasks: Task[]
+  onViewAll: () => void
+  onSelectTask: (task: Task) => void
+}) {
+  const [departments, setDepartments] = useState<{ id: string; name: string; sla_warn_minutes?: number; sla_escalate_minutes?: number }[]>([])
+
+  const deptIds = client.target_dept_ids?.length > 0 ? client.target_dept_ids : (client.target_dept_id ? [client.target_dept_id] : [])
+
+  useEffect(() => {
+    const fetchDepts = async () => {
+      if (deptIds.length === 0) return
+      const { data } = await supabase.from('departments').select('id, name, sla_warn_minutes, sla_escalate_minutes').in('id', deptIds).order('name')
+      if (data) setDepartments(data)
+    }
+    fetchDepts()
+  }, [])
+
+  const pending = tasks.filter(t => t.status === 'pending').length
+  const processing = tasks.filter(t => t.status === 'processing' || t.status === 'need_confirm').length
+  const done = tasks.filter(t => t.status === 'done').length
+  const cancelled = tasks.filter(t => t.status === 'cancelled').length
+
+  // Recent tasks (latest 5)
+  const recentTasks = [...tasks].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()).slice(0, 5)
+
+  // Per-department stats
+  const deptStats = departments.map(dept => {
+    const deptTasks = tasks.filter(t => t.target_dept_id === dept.id)
+    const dPending = deptTasks.filter(t => t.status === 'pending').length
+    const dProcessing = deptTasks.filter(t => t.status === 'processing' || t.status === 'need_confirm').length
+    const dDone = deptTasks.filter(t => t.status === 'done').length
+    const total = deptTasks.length
+
+    let status: 'green' | 'yellow' | 'red' = 'green'
+    // Check SLA
+    const activeTasks = deptTasks.filter(t => t.status === 'pending' || t.status === 'processing' || t.status === 'need_confirm')
+    let slaBreachCount = 0
+    let slaWarnCount = 0
+    activeTasks.forEach(t => {
+      const elapsedMin = (Date.now() - new Date(t.created_at).getTime()) / 60000
+      if (dept.sla_escalate_minutes && elapsedMin >= dept.sla_escalate_minutes) slaBreachCount++
+      else if (dept.sla_warn_minutes && elapsedMin >= dept.sla_warn_minutes) slaWarnCount++
+    })
+    if (slaBreachCount > 0) status = 'red'
+    else if (slaWarnCount > 0 || dPending > 0) status = 'yellow'
+
+    return { ...dept, pending: dPending, processing: dProcessing, done: dDone, total, status, slaBreachCount, slaWarnCount }
+  })
+
+  const statusConfig = {
+    green: { color: 'bg-emerald-500', label: '정상', bg: 'bg-emerald-50 border-emerald-200', ring: 'ring-emerald-500/30' },
+    yellow: { color: 'bg-amber-400', label: '주의', bg: 'bg-amber-50 border-amber-200', ring: 'ring-amber-400/30' },
+    red: { color: 'bg-red-500', label: '긴급', bg: 'bg-red-50 border-red-200', ring: 'ring-red-500/30' },
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* My Request Summary */}
+      <div>
+        <h3 className="text-[15px] font-semibold text-slate-700 mb-3">내 요청 현황</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <div className="bg-amber-50 rounded-xl border border-amber-100 px-4 py-3 flex items-center gap-2.5">
+            <Clock className="w-4 h-4 text-amber-500 shrink-0" />
+            <div>
+              <p className="text-[11px] text-amber-600 font-medium">대기</p>
+              <p className="text-xl font-bold text-slate-900">{pending}</p>
+            </div>
+          </div>
+          <div className="bg-blue-50 rounded-xl border border-blue-100 px-4 py-3 flex items-center gap-2.5">
+            <Loader2 className="w-4 h-4 text-blue-500 shrink-0" />
+            <div>
+              <p className="text-[11px] text-blue-600 font-medium">처리중</p>
+              <p className="text-xl font-bold text-slate-900">{processing}</p>
+            </div>
+          </div>
+          <div className="bg-emerald-50 rounded-xl border border-emerald-100 px-4 py-3 flex items-center gap-2.5">
+            <CheckCircle className="w-4 h-4 text-emerald-500 shrink-0" />
+            <div>
+              <p className="text-[11px] text-emerald-600 font-medium">완료</p>
+              <p className="text-xl font-bold text-slate-900">{done}</p>
+            </div>
+          </div>
+          <div className="bg-red-50 rounded-xl border border-red-100 px-4 py-3 flex items-center gap-2.5">
+            <XCircle className="w-4 h-4 text-red-500 shrink-0" />
+            <div>
+              <p className="text-[11px] text-red-600 font-medium">반려</p>
+              <p className="text-xl font-bold text-slate-900">{cancelled}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Department Status - Traffic Lights */}
+      {deptStats.length > 0 && (
+        <div>
+          <h3 className="text-[15px] font-semibold text-slate-700 mb-3">부서별 처리 현황</h3>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {deptStats.map(dept => {
+              const light = statusConfig[dept.status]
+              return (
+                <div key={dept.id} className={`rounded-xl border p-4 ${light.bg} transition-all`}>
+                  <div className="flex items-center gap-2.5 mb-3">
+                    <div className={`w-3.5 h-3.5 rounded-full ${light.color} ring-4 ${light.ring} shrink-0`} />
+                    <div className="flex items-center justify-between flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-slate-800 truncate">{dept.name}</p>
+                      <span className="text-[10px] font-medium text-slate-500 shrink-0 ml-2">{light.label}</span>
+                    </div>
+                  </div>
+
+                  {/* Progress bar */}
+                  {dept.total > 0 && (
+                    <div className="flex items-center gap-0.5 h-2 rounded-full overflow-hidden bg-slate-200/60 mb-2.5">
+                      {dept.done > 0 && <div className="h-full bg-emerald-500 rounded-full" style={{ width: `${(dept.done / dept.total) * 100}%` }} />}
+                      {dept.processing > 0 && <div className="h-full bg-blue-500 rounded-full" style={{ width: `${(dept.processing / dept.total) * 100}%` }} />}
+                      {dept.pending > 0 && <div className="h-full bg-amber-400 rounded-full" style={{ width: `${(dept.pending / dept.total) * 100}%` }} />}
+                    </div>
+                  )}
+
+                  <div className="flex items-center gap-3 text-[11px]">
+                    <span className="text-amber-600 font-medium">대기 {dept.pending}</span>
+                    <span className="text-blue-600 font-medium">처리 {dept.processing}</span>
+                    <span className="text-emerald-600 font-medium">완료 {dept.done}</span>
+                    {dept.slaBreachCount > 0 && <span className="text-red-600 font-semibold ml-auto">SLA초과 {dept.slaBreachCount}</span>}
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Recent Requests */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-[15px] font-semibold text-slate-700">최근 요청</h3>
+          {tasks.length > 5 && (
+            <button onClick={onViewAll} className="text-xs text-blue-500 font-medium hover:text-blue-600">
+              전체보기 ({tasks.length})
+            </button>
+          )}
+        </div>
+
+        {recentTasks.length === 0 ? (
+          <div className="bg-white rounded-xl border border-gray-200 p-8 text-center">
+            <ClipboardList className="w-8 h-8 text-gray-300 mx-auto mb-2" />
+            <p className="text-sm text-gray-500">아직 요청한 업무가 없습니다.</p>
+            <p className="text-xs text-gray-400 mt-1">오른쪽 하단 + 버튼을 눌러 업무를 요청하세요.</p>
+          </div>
+        ) : (
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 divide-y divide-gray-100">
+            {recentTasks.map(task => (
+              <button
+                key={task.id}
+                onClick={() => onSelectTask(task)}
+                className="w-full text-left px-4 py-3 hover:bg-gray-50 transition-colors flex items-center gap-3 active:bg-gray-100"
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium text-gray-900 truncate">{task.title}</p>
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span className={`px-2 py-0.5 text-[10px] font-semibold rounded-md ${STATUS_COLORS[task.status]}`}>
+                      {STATUS_LABELS[task.status]}
+                    </span>
+                    <span className="text-[10px] text-gray-400">
+                      {new Date(task.created_at).toLocaleString('ko-KR')}
+                    </span>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-gray-300 shrink-0" />
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
 
 function ExternalTaskList({ tasks, onSelect }: {
   tasks: Task[]
