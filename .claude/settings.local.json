@@ -27,7 +27,8 @@
       "Bash(find /c/Users/1080ti/WJM -type f \\\\\\(-name *.md -o -name *.sql \\\\\\))",
       "Bash(find /c/Users/1080ti/WJM -maxdepth 2 -type f \\\\\\(-name *.md -o -name *.txt -o -name schema* \\\\\\))",
       "Bash(ls -la /c/Users/1080ti/WJM/.env*)",
-      "Bash(grep -r \"localhost\\\\|127.0.0.1\\\\|http://\" /c/Users/1080ti/WJM/src --include=*.ts --include=*.tsx)"
+      "Bash(grep -r \"localhost\\\\|127.0.0.1\\\\|http://\" /c/Users/1080ti/WJM/src --include=*.ts --include=*.tsx)",
+      "Workflow(deep-research)"
     ]
   }
 }
