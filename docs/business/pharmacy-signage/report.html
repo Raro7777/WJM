@@ -9,44 +9,37 @@
     --shadow:0 1px 2px rgba(30,40,35,.04),0 8px 24px -12px rgba(30,40,35,.14);
     --maxw:920px;
   }
-  @media (prefers-color-scheme:dark){
-    :root{
+  @media (prefers-color-scheme:dark){:root{
       --bg:#14171A; --surface:#1B1F22; --surface2:#23282B; --surface3:#2B3134;
       --ink:#ECEFEC; --ink2:#A9B2AC; --muted:#727B76; --border:#2C3236; --border2:#39403F;
       --accent:#22B892; --accent-deep:#39C9A5; --accent-soft:#173029;
       --pos:#33C39C; --neg:#D97155; --warn:#DDA04A;
       --c1:#14876C; --c2:#3D77B0; --c3:#B5741C; --c4:#A44D7C;
-      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.5);
-    }
-  }
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.5);}}
   :root[data-theme="dark"]{
       --bg:#14171A; --surface:#1B1F22; --surface2:#23282B; --surface3:#2B3134;
       --ink:#ECEFEC; --ink2:#A9B2AC; --muted:#727B76; --border:#2C3236; --border2:#39403F;
       --accent:#22B892; --accent-deep:#39C9A5; --accent-soft:#173029;
       --pos:#33C39C; --neg:#D97155; --warn:#DDA04A;
       --c1:#14876C; --c2:#3D77B0; --c3:#B5741C; --c4:#A44D7C;
-      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.5);
-  }
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.5);}
   :root[data-theme="light"]{
       --bg:#FBFAF7; --surface:#FFFFFF; --surface2:#F5F3ED; --surface3:#EFEDE4;
       --ink:#17211D; --ink2:#48534D; --muted:#8A938C; --border:#E6E2D7; --border2:#D8D3C5;
       --accent:#0A8F70; --accent-deep:#086F56; --accent-soft:#E1F1EC;
       --pos:#0A8F70; --neg:#C0533B; --warn:#C77C1E;
       --c1:#0AA07C; --c2:#2F6FB0; --c3:#E08A1E; --c4:#B0417F;
-      --shadow:0 1px 2px rgba(30,40,35,.04),0 8px 24px -12px rgba(30,40,35,.14);
-  }
+      --shadow:0 1px 2px rgba(30,40,35,.04),0 8px 24px -12px rgba(30,40,35,.14);}
   *{box-sizing:border-box}
   body{margin:0;background:var(--bg);color:var(--ink);
-    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Segoe UI",Roboto,sans-serif;
-    line-height:1.65;-webkit-font-smoothing:antialiased}
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Segoe UI",Roboto,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
   .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
   .num{font-variant-numeric:tabular-nums}
   h1,h2,h3{text-wrap:balance;line-height:1.25;margin:0}
-  a{color:var(--accent-deep)}
   header.hero{padding:64px 0 40px;border-bottom:1px solid var(--border)}
   .eyebrow{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);font-weight:700}
   header.hero h1{font-size:clamp(30px,5vw,46px);font-weight:800;letter-spacing:-.02em;margin:14px 0 10px}
-  header.hero p.lede{font-size:18px;color:var(--ink2);max-width:60ch;margin:0}
+  header.hero p.lede{font-size:18px;color:var(--ink2);max-width:62ch;margin:0}
   .meta-row{display:flex;flex-wrap:wrap;gap:18px;margin-top:26px;font-size:13px;color:var(--muted)}
   .meta-row b{color:var(--ink2);font-weight:600}
   .verdict{display:flex;gap:20px;align-items:flex-start;margin:34px 0 8px;padding:22px 24px;
@@ -70,12 +63,14 @@
   .card h4{font-size:16px;font-weight:700;margin:0 0 3px}
   .card .sub{font-size:13px;color:var(--muted);margin:0 0 14px}
   .tbl-scroll{overflow-x:auto;margin:8px 0}
-  table{border-collapse:collapse;width:100%;font-size:14px;min-width:520px}
+  table{border-collapse:collapse;width:100%;font-size:14px;min-width:540px}
   th,td{text-align:right;padding:10px 12px;border-bottom:1px solid var(--border)}
   th:first-child,td:first-child{text-align:left}
   thead th{font-size:12px;color:var(--muted);font-weight:700;border-bottom:1.5px solid var(--border2)}
   tbody tr:hover{background:var(--surface2)}
   td.lbl{color:var(--ink);font-weight:600}
+  tr.sub-row td{font-size:13px;color:var(--ink2);padding-top:6px;padding-bottom:6px}
+  tr.sub-row td.lbl{font-weight:500;padding-left:24px}
   .cell-neg{color:var(--neg);font-weight:700} .cell-pos{color:var(--pos);font-weight:700}
   .scn-worst{color:var(--muted)} .scn-base{color:var(--ink);font-weight:700} .scn-best{color:var(--accent-deep)}
   .cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -91,8 +86,7 @@
   .legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
   .chart-wrap{width:100%;overflow-x:auto}
   svg{display:block;max-width:100%}
-  .tt{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--border2);
-    border-radius:9px;padding:8px 11px;font-size:12.5px;box-shadow:var(--shadow);opacity:0;transition:opacity .1s;z-index:20;color:var(--ink)}
+  .tt{position:fixed;pointer-events:none;background:var(--surface);border:1px solid var(--border2);border-radius:9px;padding:8px 11px;font-size:12.5px;box-shadow:var(--shadow);opacity:0;transition:opacity .1s;z-index:20;color:var(--ink)}
   .src{font-size:12.5px;color:var(--muted)}
   .callout{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:15px 17px;font-size:14px;color:var(--ink2);margin:14px 0}
   .callout b{color:var(--ink)}
@@ -100,33 +94,32 @@
   .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px}
   .tag.ok{background:var(--accent-soft);color:var(--accent-deep)}
   .tag.cau{background:color-mix(in srgb,var(--warn) 16%,transparent);color:var(--warn)}
-  .compare{display:grid;grid-template-columns:1fr auto 1fr;gap:0;align-items:stretch;margin:16px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface)}
-  .compare .col{padding:18px 20px}
-  .compare .col.old{background:var(--surface2)}
-  .compare .col.new{background:linear-gradient(180deg,var(--accent-soft),transparent 160%)}
-  .compare .mid{display:flex;align-items:center;justify-content:center;font-size:20px;color:var(--muted);background:var(--surface)}
-  .compare h5{margin:0 0 10px;font-size:13px;letter-spacing:.02em;text-transform:uppercase}
-  .compare .col.old h5{color:var(--muted)} .compare .col.new h5{color:var(--accent-deep)}
-  .compare dl{margin:0;display:grid;grid-template-columns:1fr auto;gap:6px 10px;font-size:13.5px}
-  .compare dt{color:var(--ink2)} .compare dd{margin:0;text-align:right;font-weight:700;font-variant-numeric:tabular-nums}
-  .compare .col.new dd{color:var(--accent-deep)}
-  @media(max-width:680px){.compare{grid-template-columns:1fr}.compare .mid{padding:6px;transform:rotate(90deg)}}
+  .stages{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:16px 0}
+  @media(max-width:680px){.stages{grid-template-columns:1fr}}
+  .stage{border:1px solid var(--border);border-radius:14px;padding:18px 20px;background:var(--surface);position:relative;overflow:hidden}
+  .stage.s1{border-top:3px solid var(--c1)} .stage.s2{border-top:3px solid var(--c2)}
+  .stage .badge2{font-size:11px;font-weight:800;letter-spacing:.03em;padding:3px 9px;border-radius:6px;display:inline-block;margin-bottom:8px}
+  .stage.s1 .badge2{background:var(--accent-soft);color:var(--accent-deep)}
+  .stage.s2 .badge2{background:color-mix(in srgb,var(--c2) 16%,transparent);color:var(--c2)}
+  .stage h4{margin:0 0 4px;font-size:17px}
+  .stage p{margin:0 0 10px;font-size:13.5px;color:var(--ink2)}
+  .stage .big{font-size:22px;font-weight:800;letter-spacing:-.02em}
+  .stage.s1 .big{color:var(--accent-deep)} .stage.s2 .big{color:var(--c2)}
   footer{padding:40px 0 70px;color:var(--muted);font-size:12.5px}
-  .theme-toggle{position:fixed;top:14px;right:14px;z-index:30;background:var(--surface);border:1px solid var(--border);
-    color:var(--ink2);border-radius:9px;padding:7px 11px;font-size:12px;cursor:pointer;box-shadow:var(--shadow)}
+  .theme-toggle{position:fixed;top:14px;right:14px;z-index:30;background:var(--surface);border:1px solid var(--border);color:var(--ink2);border-radius:9px;padding:7px 11px;font-size:12px;cursor:pointer;box-shadow:var(--shadow)}
 </style>
 
 <button class="theme-toggle" onclick="toggleTheme()" aria-label="테마 전환">◐ 테마</button>
 
 <header class="hero">
   <div class="wrap">
-    <div class="eyebrow">비즈니스 모델 타당성 분석 · 자체 성과광고 모델</div>
+    <div class="eyebrow">비즈니스 모델 타당성 분석 · 2단 로켓 수익구조</div>
     <h1>약국 디지털 사이니지<br>오프라인 광고매체 사업</h1>
-    <p class="lede">전국 약국에 디스플레이를 설치하고, 운영사의 자체 성과광고(인입·접수전화)를 태워 수익을 내는 모델의 시장성·수익성 진단</p>
+    <p class="lede">1단(기반) 자체 인터넷 가입 성과광고로 유닛 흑자를 확보하고, 2단(상방) 약국망 규모 도달 후 외부·프로그래매틱 DOOH를 얹는 결합 모델의 시장성·수익성 진단</p>
     <div class="meta-row">
       <span><b>분석일</b> 2026.07</span>
-      <span><b>수익모델</b> 자체 성과광고 · 인입 3만원 / 접수전화 15만원</span>
-      <span><b>방법</b> 유닛이코노믹스 5년 · 시나리오/민감도</span>
+      <span><b>1단</b> 인터넷 가입 성과 · 인입 3만 / 접수전화 15만</span>
+      <span><b>2단</b> 외부·구글/네이버 프로그래매틱 DOOH</span>
     </div>
   </div>
 </header>
@@ -136,274 +129,233 @@
   <div class="verdict">
     <span class="badge">적극 추진</span>
     <div>
-      <h2>“자체 광고를 태우는 순간, 한계사업이 고수익 사업으로 뒤집힌다”</h2>
-      <p>외부에 광고 슬롯을 파는 대신 <strong>운영사의 성과광고(리드·전화)를 직접 태우면</strong>, 매체 수수료가 아니라 리드 가치 전액을 회수하고 첫날부터 100% 채워집니다. 그 결과 기본 시나리오 5년 NPV는 <strong style="color:var(--pos)">+169억</strong>, 스크린 회수기간 <strong style="color:var(--pos)">약 3개월</strong>, 필요 투자금 <strong>5억</strong>으로 급변합니다. 관건은 이제 수익화가 아니라 <strong>얼마나 빨리 약국을 확보·설치하느냐</strong>입니다.</p>
+      <h2>“1단으로 흑자를 깔고, 2단으로 상방을 연다”</h2>
+      <p>기반 수익은 <strong>자체 인터넷 가입 성과광고</strong>(인입 3만·접수전화 15만)로, 첫날부터 100% 가동되며 스크린 회수기간이 <strong style="color:var(--pos)">약 3개월</strong>입니다. 약국망이 커지면 그 위에 <strong>외부·프로그래매틱 DOOH</strong>가 순수 상방으로 얹힙니다. 결합 기준 5년 NPV는 <strong style="color:var(--pos)">+208억</strong>, 필요 투자금 <strong>5억</strong>. 관건은 수익화가 아니라 <strong>설치 전개속도</strong>입니다.</p>
     </div>
   </div>
 
-  <!-- 모델 전환 비교 -->
+  <!-- 2단 구조 -->
   <section>
-    <h2 class="sec">The Pivot — 무엇이 바뀌었나</h2>
-    <h3 class="title">같은 인프라, 전혀 다른 경제성</h3>
-    <p class="body">디스플레이·약국망이라는 <strong>물리적 자산은 동일</strong>합니다. 바뀐 것은 그 위에서 무엇을 트느냐입니다. 운영사가 온라인 성과광고 역량을 보유했기에, 스크린을 <strong>자체 리드생성 채널</strong>로 쓸 수 있습니다.</p>
-    <div class="compare">
-      <div class="col old">
-        <h5>모델 A · 외부 DOOH 슬롯 판매</h5>
-        <dl>
-          <dt>스크린당 월매출</dt><dd>≈12만</dd>
-          <dt>5년 NPV(기본)</dt><dd>−50억</dd>
-          <dt>필요 투자금</dt><dd>76억</dd>
-          <dt>손익분기 약국</dt><dd>3,378개</dd>
-          <dt>스크린 회수</dt><dd>1.6년</dd>
-          <dt>최대 리스크</dt><dd>광고 채움율</dd>
-        </dl>
+    <h2 class="sec">The Model — 수익 구조</h2>
+    <h3 class="title">하나의 약국망, 두 개의 엔진</h3>
+    <p class="body">디스플레이·약국망이라는 <strong>물리적 자산은 하나</strong>지만 그 위에서 두 개의 수익 엔진이 순차 가동됩니다. 1단은 지금 당장 흑자를 만드는 기반이고, 2단은 규모가 만드는 상방입니다.</p>
+    <div class="stages">
+      <div class="stage s1">
+        <span class="badge2">1단 · 지금부터</span>
+        <h4>자체 인터넷 가입 성과광고</h4>
+        <p>운영사의 인터넷 가입 유치 광고를 스크린에 직접 태움. 인입 3만원·접수전화 15만원. 팔 필요 없이 자체 물량으로 첫날부터 100% 가동.</p>
+        <div class="big">스크린당 월 ≈44만원</div>
+        <p style="margin-top:4px;color:var(--muted)">5년 NPV 기여 +169억 · 회수 3개월</p>
       </div>
-      <div class="mid">→</div>
-      <div class="col new">
-        <h5>모델 B · 자체 성과광고 ★</h5>
-        <dl>
-          <dt>스크린당 월매출</dt><dd>≈44만</dd>
-          <dt>5년 NPV(기본)</dt><dd>+169억</dd>
-          <dt>필요 투자금</dt><dd>5억</dd>
-          <dt>손익분기 약국</dt><dd>451개</dd>
-          <dt>스크린 회수</dt><dd>0.26년</dd>
-          <dt>최대 리스크</dt><dd>설치 전개속도</dd>
-        </dl>
+      <div class="stage s2">
+        <span class="badge2">2단 · 규모 도달 후</span>
+        <h4>외부·프로그래매틱 DOOH</h4>
+        <p>약국망이 커지면 전국 헬스 DOOH 네트워크로서 외부 광고주 유치 + 구글/네이버 프로그래매틱 연동. 남는 광고 루프를 판매하는 순수 상방.</p>
+        <div class="big">3년차 가동 → 5년차 +59억</div>
+        <p style="margin-top:4px;color:var(--muted)">5년 NPV 상방 +38억(기본)~+128억(낙관)</p>
       </div>
     </div>
-    <div class="callout hot"><b>핵심:</b> 자체 광고는 두 가지를 동시에 해결합니다. ① <b>채움율 리스크 소멸</b> — 팔 필요 없이 자체 물량으로 첫날부터 100% 가동. ② <b>단가 상승</b> — 매체 마진(약 12만)이 아니라 리드 가치 전액(약 44만)을 회수.</div>
+    <div class="callout hot"><b>왜 이 순서인가:</b> 2단(외부 광고) 단독으로는 초기 소규모 약국망에 광고주가 붙지 않아 채움율 리스크가 큽니다(→ 그것이 ‘모델 A’가 −50억이던 이유). 1단 자체광고로 <b>규모를 흑자로 키운 뒤</b> 2단을 얹으면, 협상력 있는 대형 네트워크로서 외부 수익을 리스크 없이 추가할 수 있습니다.</div>
   </section>
 
   <!-- Executive Summary -->
   <section>
     <h2 class="sec">Executive Summary</h2>
-    <h3 class="title">한눈에 보는 결론 (모델 B 기준)</h3>
+    <h3 class="title">한눈에 보는 결론 (결합 기준)</h3>
     <div class="tiles">
-      <div class="tile pos"><div class="k">5년 NPV · 기본</div><div class="v num">+169<span style="font-size:15px">억</span></div><div class="s">비관 −36억 · 낙관 +903억</div></div>
-      <div class="tile pos"><div class="k">스크린 투자회수</div><div class="v num">0.26<span style="font-size:15px">년</span></div><div class="s">약 3개월(성숙 유닛)</div></div>
-      <div class="tile acc"><div class="k">필요 투자금(기본)</div><div class="v num">5<span style="font-size:15px">억</span></div><div class="s">낙관 시 자기자금 순환</div></div>
-      <div class="tile acc"><div class="k">손익분기 약국 수</div><div class="v num">451<span style="font-size:15px">개</span></div><div class="s">성숙 유닛 기준</div></div>
-      <div class="tile acc"><div class="k">필요 응답률</div><div class="v num">0.16<span style="font-size:15px">%</span></div><div class="s">방문객 대비(기본)</div></div>
-      <div class="tile pos"><div class="k">5년차 EBITDA</div><div class="v num">205<span style="font-size:15px">억</span></div><div class="s">7,000개 설치 가정</div></div>
+      <div class="tile pos"><div class="k">5년 NPV · 결합</div><div class="v num">+208<span style="font-size:15px">억</span></div><div class="s">1단 169 + 2단 상방 38</div></div>
+      <div class="tile pos"><div class="k">5년차 총매출</div><div class="v num">359<span style="font-size:15px">억</span></div><div class="s">1단 300 + 2단 59</div></div>
+      <div class="tile pos"><div class="k">스크린 투자회수</div><div class="v num">0.26<span style="font-size:15px">년</span></div><div class="s">1단만으로 약 3개월</div></div>
+      <div class="tile acc"><div class="k">필요 투자금</div><div class="v num">5<span style="font-size:15px">억</span></div><div class="s">이후 회수현금 재투자</div></div>
+      <div class="tile acc"><div class="k">1단 손익분기</div><div class="v num">2.5<span style="font-size:15px">리드</span></div><div class="s">스크린당 월·방문 0.05%</div></div>
+      <div class="tile pos"><div class="k">5년차 EBITDA</div><div class="v num">252<span style="font-size:15px">억</span></div><div class="s">7,000개 설치 가정</div></div>
     </div>
-    <div class="callout"><b>핵심 판단:</b> 이 모델의 성패는 <b>스크린당 월 리드·전화 발생 수</b>에 달려 있습니다. NPV 손익분기는 스크린당 월 <b>2.5리드</b>(월매출 16만원)에 불과하고, 이는 방문객의 <b>0.05~0.07%</b> 응답만으로 달성됩니다. 대기시간이 길고 건강 관여도가 높은 약국 방문객 특성상 <b>충분히 넘을 수 있는 문턱</b>입니다.</div>
+    <div class="callout"><b>핵심 판단:</b> 1단(인터넷 가입)만으로도 이미 유닛 흑자(회수 3개월)이고, NPV 손익분기는 스크린당 월 <b>2.5리드</b>(방문객 0.05% 응답)에 불과합니다. 2단(외부 DOOH)은 검증된 1단 위에 리스크 없이 얹는 상방이라 <b>다운사이드는 1단이 방어하고 업사이드는 2단이 연다</b>는 구조입니다.</div>
   </section>
 
-  <!-- 1 시장성 -->
+  <!-- 시장성 -->
   <section>
     <h2 class="sec">1 · Market — 시장성</h2>
-    <h3 class="title">매체 기반은 넓고, 성과광고에 이상적인 청중</h3>
-    <p class="body">전국 약국은 <strong>25,199개</strong>(2024.10, 매년 ~2%↑)로 인벤토리가 충분합니다. 더 중요한 건 청중의 질입니다. 약국 방문객은 <strong>대기시간이 길고(포획된 주목), 건강·시니어 중심</strong>이라 성과광고의 고수익 버티컬(건강·보험·상조·요양)과 정확히 맞물립니다.</p>
+    <h3 class="title">넓은 인벤토리 + 두 엔진에 모두 맞는 청중</h3>
+    <p class="body">전국 약국 <strong>25,199개</strong>(2024.10, 매년 ~2%↑). 약국 방문객은 <strong>대기시간이 길고 생활 밀착·시니어 중심</strong>이라 1단(인터넷 가입 전환)과 2단(건강·보험·상조 브랜드 DOOH) 양쪽 모두에 적합한 청중입니다.</p>
     <div class="cols">
       <div class="card"><h4>지역 우선순위</h4><p class="sub">초기 설치 타깃</p>
-        <ul class="clean">
-          <li><b>경기</b> 5,826개 · 조제건수 최다 <span class="tag ok">물량 1위</span></li>
-          <li><b>서울</b> 밀도 최고 61.13/10만명 <span class="tag ok">밀도 1위</span></li>
-          <li><b>대구·전북</b> 밀도 상위 거점</li>
-        </ul></div>
-      <div class="card"><h4>왜 성과광고에 유리한가</h4><p class="sub">청중 적합성</p>
-        <ul class="clean">
-          <li><b>긴 대기시간</b> → 광고 노출·주목 시간 확보</li>
-          <li><b>건강 관여 청중</b> → 건강·보험·상조 리드 전환율↑</li>
-          <li><b>반복 방문</b> → 리타깃·빈도 효과</li>
-        </ul></div>
+        <ul class="clean"><li><b>경기</b> 5,826개 <span class="tag ok">물량 1위</span></li><li><b>서울</b> 밀도 61.13/10만명 <span class="tag ok">밀도 1위</span></li><li><b>대구·전북</b> 밀도 상위 거점</li></ul></div>
+      <div class="card"><h4>2단을 뒷받침하는 DOOH 시장</h4><p class="sub">규모 도달 후 상방 근거</p>
+        <ul class="clean"><li>국내 옥외광고 <b>4.62조원</b>, DOOH <b>≈1.2조원</b></li><li>DOOH 성장 <b>17.2%</b>(전체 옥외의 2배)</li><li>리테일·프로그래매틱 DOOH 주류화 → 전국 약국망은 매력적 인벤토리</li></ul></div>
     </div>
-    <p class="src">출처: 약사공론(HIRA 인용) · 확증 신뢰도 높음(정부 원자료 기반).</p>
+    <p class="src">출처: 약사공론(HIRA) · 오픈애즈·이노션 DOOH 리포트.</p>
   </section>
 
-  <!-- 2 규제 -->
+  <!-- Financials -->
   <section>
-    <h2 class="sec">2 · Regulation — 규제 제약</h2>
-    <h3 class="title">자체 광고라도 ‘무엇을 트느냐’는 지켜야 한다</h3>
-    <p class="body">수익모델이 자체 광고여도 소재 규제는 동일하게 적용됩니다. 다행히 성과광고의 주력 버티컬 대부분은 <strong>비의약품</strong>이라 제약이 크지 않습니다.</p>
-    <div class="tbl-scroll"><table>
-      <thead><tr><th>광고 소재</th><th>가능</th><th>비고</th></tr></thead>
-      <tbody>
-        <tr><td class="lbl">건강기능식품·건강서비스</td><td><span class="tag ok">유리</span></td><td>표현 자유도 높음 · 주력</td></tr>
-        <tr><td class="lbl">보험·상조·요양·금융</td><td><span class="tag ok">가능</span></td><td>각 업권 광고규정 준수 · 고단가 리드</td></tr>
-        <tr><td class="lbl">일반의약품(OTC)</td><td><span class="tag cau">조건부</span></td><td>약사법 68조의2 사전심의 필요</td></tr>
-        <tr><td class="lbl">전문의약품</td><td><span class="tag cau">불가</span></td><td>대중광고 금지</td></tr>
-      </tbody>
-    </table></div>
-    <p class="src">근거: 약사법 68·68조의2, 의약품 등의 안전에 관한 규칙 79조, 옥외광고물법.</p>
-  </section>
-
-  <!-- 3 Financials -->
-  <section>
-    <h2 class="sec">3 · Financials — 수익성 모델 (모델 B)</h2>
-    <h3 class="title">성과광고 5년 유닛 이코노믹스</h3>
-    <p class="body">스크린당 월 <strong>리드 수 × 3만원 + 전화 수 × 15만원</strong>을 매출로 잡고, 5년 설치 전개와 전환 성숙도를 반영했습니다. 자체 광고이므로 채움율은 첫날부터 100%(전환율만 성숙)입니다.</p>
+    <h2 class="sec">2 · Financials — 결합 수익성 모델</h2>
+    <h3 class="title">2단 로켓 5년 유닛 이코노믹스</h3>
+    <p class="body">1단 매출 = 스크린당 (리드×3만 + 전화×15만), 첫날부터 100% 가동. 2단 매출 = 규모 도달 후 스크린당 외부 DOOH 월매출(성숙 10만), 3년차부터 램프. 두 층을 합산했습니다.</p>
 
     <div class="card">
       <h4>시나리오 요약</h4><p class="sub">비관 / 기본 / 낙관 · 금액 억원</p>
       <div class="tbl-scroll"><table>
         <thead><tr><th>지표</th><th class="scn-worst">비관</th><th class="scn-base">기본</th><th class="scn-best">낙관</th></tr></thead>
         <tbody>
-          <tr><td class="lbl">성숙 스크린당 월매출</td><td class="scn-worst num">18만</td><td class="scn-base num">44만</td><td class="scn-best num">94만</td></tr>
-          <tr><td class="lbl">가정: 월 리드 / 전화</td><td class="scn-worst num">3 / 0.6</td><td class="scn-base num">7 / 1.5</td><td class="scn-best num">14 / 3.5</td></tr>
           <tr><td class="lbl">5년차 설치 약국 수</td><td class="scn-worst num">4,000</td><td class="scn-base num">7,000</td><td class="scn-best num">11,000</td></tr>
-          <tr><td class="lbl">5년차 광고 총매출</td><td class="scn-worst num">67.7억</td><td class="scn-base num">300.1억</td><td class="scn-best num">1,020.6억</td></tr>
-          <tr><td class="lbl">5년차 EBITDA</td><td class="num cell-pos">+15.9억</td><td class="num cell-pos">+205.4억</td><td class="num cell-pos">+833.6억</td></tr>
-          <tr><td class="lbl">필요 투자금(최대누적적자)</td><td class="num cell-neg">52.7억</td><td class="num cell-neg">5.0억</td><td class="num cell-pos">자기자금</td></tr>
-          <tr><td class="lbl">5년 NPV(15% 할인)</td><td class="num cell-neg">−35.9억</td><td class="num cell-pos">+169.4억</td><td class="num cell-pos">+902.8억</td></tr>
-          <tr><td class="lbl">손익분기 약국 수(성숙)</td><td class="scn-worst num">1,750개</td><td class="scn-base num">451개</td><td class="scn-best num">154개</td></tr>
-          <tr><td class="lbl">스크린 투자회수기간</td><td class="scn-worst num">1.17년</td><td class="scn-base num">0.26년</td><td class="scn-best num">0.08년</td></tr>
+          <tr><td class="lbl">5년차 총매출</td><td class="scn-worst num">81.2억</td><td class="scn-base num">358.8억</td><td class="scn-best num">1,204억</td></tr>
+          <tr class="sub-row"><td class="lbl">├ 1단 인터넷가입</td><td class="scn-worst num">67.7억</td><td class="num">300.1억</td><td class="num">1,021억</td></tr>
+          <tr class="sub-row"><td class="lbl">└ 2단 외부 DOOH</td><td class="scn-worst num">13.5억</td><td class="num">58.6억</td><td class="num">183.6억</td></tr>
+          <tr><td class="lbl">5년차 EBITDA</td><td class="num cell-pos">+26.0억</td><td class="num cell-pos">+252.3억</td><td class="num cell-pos">+989.6억</td></tr>
+          <tr><td class="lbl">필요 투자금</td><td class="num cell-neg">43.6억</td><td class="num cell-neg">5.0억</td><td class="num cell-pos">자기자금</td></tr>
+          <tr><td class="lbl">5년 NPV(15% 할인)</td><td class="num cell-neg">−27.7억</td><td class="num cell-pos">+207.6억</td><td class="num cell-pos">+1,030억</td></tr>
+          <tr class="sub-row"><td class="lbl">├ 1단 기여</td><td class="scn-worst num">−35.9억</td><td class="num">+169.4억</td><td class="num">+902.8억</td></tr>
+          <tr class="sub-row"><td class="lbl">└ 2단 상방</td><td class="num cell-pos">+8.2억</td><td class="num cell-pos">+38.2억</td><td class="num cell-pos">+127.7억</td></tr>
         </tbody>
       </table></div>
     </div>
 
     <div class="card">
-      <h4>기본 시나리오 — 현금흐름 J커브</h4>
+      <h4>매출 성장: 2단 로켓</h4>
+      <p class="sub">연도별 총매출 = 1단(인터넷가입) + 2단(외부 DOOH). 2단은 3년차부터 점화 · 단위 억원</p>
+      <div class="legend"><span><i style="background:var(--c1)"></i>1단 인터넷가입</span><span><i style="background:var(--c2)"></i>2단 외부 DOOH</span></div>
+      <div class="chart-wrap"><svg id="stack" viewBox="0 0 700 300" role="img" aria-label="매출 스택"></svg></div>
+    </div>
+
+    <div class="card">
+      <h4>현금흐름 J커브 (기본)</h4>
       <p class="sub">연간 EBITDA(막대)와 누적 현금(선). 2년차 EBITDA 흑자, 3년차 누적 흑자 전환 · 단위 억원</p>
       <div class="legend"><span><i style="background:var(--c1)"></i>연간 EBITDA</span><span><i style="background:var(--c2)"></i>누적 현금흐름</span></div>
       <div class="chart-wrap"><svg id="jcurve" viewBox="0 0 700 320" role="img" aria-label="J커브"></svg></div>
     </div>
 
-    <div class="cols">
-      <div class="card"><h4>가치동인 민감도 (토네이도)</h4><p class="sub">각 변수 변동 시 5년 NPV · 기본 +169억</p>
-        <div class="chart-wrap"><svg id="tornado" viewBox="0 0 340 260" role="img" aria-label="토네이도"></svg></div></div>
-      <div class="card"><h4>NPV 지도: 월 리드 × 전화 수</h4><p class="sub">모두 흑자권 · 진할수록 유리 · 단위 억원</p>
-        <div class="chart-wrap"><svg id="heat" viewBox="0 0 340 250" role="img" aria-label="NPV 히트맵"></svg></div></div>
+    <div class="card">
+      <h4>가치동인 민감도 (토네이도)</h4><p class="sub">각 변수 변동 시 5년 NPV · 기본 +208억</p>
+      <div class="chart-wrap"><svg id="tornado" viewBox="0 0 680 250" role="img" aria-label="토네이도"></svg></div>
     </div>
-    <div class="callout"><b>읽는 법:</b> 최대 가치동인이 이제 <b>설치 전개속도</b>입니다. 모든 스크린이 흑자이므로 <b>많이·빨리 깔수록 이익이 커지는</b> 구조로 바뀌었습니다. 사업의 병목이 ‘광고를 파는 능력’에서 ‘약국을 확보·설치하는 실행력’으로 이동했습니다.</div>
+    <div class="callout"><b>읽는 법:</b> 최대 가치동인은 <b>설치 전개속도</b>입니다. 모든 스크린이 흑자이므로 빨리·많이 깔수록 이익이 커지고, 2단(외부 DOOH)의 협상력도 규모에서 나옵니다. 병목은 ‘광고 판매’가 아니라 <b>약국 확보·설치 실행력</b>입니다.</div>
   </section>
 
-  <!-- 4 타당성 -->
+  <!-- 타당성 -->
   <section>
-    <h2 class="sec">4 · Feasibility — 핵심 가정 검증</h2>
-    <h3 class="title">필요 응답률은 넘기 쉬운 문턱이다</h3>
-    <p class="body">이 모델의 유일한 큰 불확실성은 <strong>스크린당 월 리드·전화 발생 수</strong>입니다. 이를 약국 방문객 대비 응답률로 환산하면 문턱이 얼마나 낮은지 드러납니다.</p>
+    <h2 class="sec">3 · Feasibility — 핵심 가정 검증</h2>
+    <h3 class="title">1단 손익분기는 넘기 쉬운 문턱</h3>
+    <p class="body">최대 불확실성은 <strong>스크린당 월 인터넷가입 리드·전화 수</strong>입니다. 이를 방문객 응답률로 환산하면 문턱이 얼마나 낮은지 드러납니다. (2단은 검증된 1단 위 상방이라 다운사이드 방어됨)</p>
     <div class="tbl-scroll"><table>
-      <thead><tr><th>일 방문객 (월 노출)</th><th>손익분기(월 2.5건)</th><th>기본(월 8.5건)</th><th>낙관(월 17.5건)</th></tr></thead>
+      <thead><tr><th>일 방문객 (월 노출)</th><th>1단 손익분기(월 2.5건)</th><th>기본(월 8.5건)</th><th>낙관(월 17.5건)</th></tr></thead>
       <tbody>
         <tr><td class="lbl">120명 (3,600)</td><td class="num">0.07%</td><td class="num cell-pos">0.24%</td><td class="num">0.49%</td></tr>
         <tr><td class="lbl">180명 (5,400)</td><td class="num">0.05%</td><td class="num cell-pos">0.16%</td><td class="num">0.32%</td></tr>
         <tr><td class="lbl">250명 (7,500)</td><td class="num">0.03%</td><td class="num cell-pos">0.11%</td><td class="num">0.23%</td></tr>
       </tbody>
     </table></div>
-    <div class="callout hot"><b>결론:</b> 손익분기는 방문객 <b>0.03~0.07%</b>(약 1,500~3,000명 중 1명)만 응답하면 됩니다. 이는 QR·전화번호를 건 성과광고 기준 <b>매우 보수적으로도 달성 가능</b>한 수치입니다. 다만 실제 응답률은 <b>파일럿으로 실측</b>해야 확정됩니다.</div>
+    <div class="callout hot"><b>결론:</b> 1단 손익분기는 방문객 <b>0.03~0.07%</b>(약 1,500~3,000명 중 1명)만 인터넷 가입에 응답하면 달성됩니다. 인터넷 가입은 한국에서 이 단가가 정착된 검증 버티컬이라, 실측 응답률만 확인되면 <b>기반 흑자는 상당히 안정적</b>입니다.</div>
   </section>
 
-  <!-- 5 리스크 -->
+  <!-- 리스크 -->
   <section>
-    <h2 class="sec">5 · Verdict — 성공요인과 리스크</h2>
+    <h2 class="sec">4 · Verdict — 성공요인과 리스크</h2>
     <h3 class="title">병목은 수익화가 아니라 실행이다</h3>
     <div class="cols">
-      <div class="card"><h4 style="color:var(--pos)">✓ 성공의 4가지 열쇠</h4>
+      <div class="card"><h4 style="color:var(--pos)">✓ 성공의 열쇠</h4>
         <ul class="clean">
-          <li><b>설치 전개속도</b> — 최대 가치동인. 약국 계약·설치를 표준화·자동화해 빠르게 깔 것</li>
-          <li><b>리드 최적화</b> — 자체 광고엔진으로 버티컬·크리에이티브를 지속 A/B, 전환율 극대화</li>
-          <li><b>고단가 버티컬 매칭</b> — 건강·보험·상조·요양 등 접수전화(15만) 비중 확대</li>
-          <li><b>약국 인센티브</b> — 마진이 크므로 배분을 넉넉히(월 9~14만) 줘 유치·유지율 확보</li>
+          <li><b>설치 전개속도</b> — 최대 가치동인. 약국 계약·설치 표준화로 빠르게 규모 확보</li>
+          <li><b>1단 전환 최적화</b> — 인터넷가입 크리에이티브·콜 연결 A/B로 리드·접수 극대화</li>
+          <li><b>2단 점화 타이밍</b> — 2,000~3,000개 도달 시 외부/프로그래매틱 DOOH 영업 착수</li>
+          <li><b>약국 인센티브</b> — 큰 마진으로 넉넉한 배분(월 9~14만) 제공, 유치·유지율 확보</li>
         </ul></div>
       <div class="card"><h4 style="color:var(--warn)">△ 핵심 리스크</h4>
         <ul class="clean risk">
-          <li><b>응답률 미달</b> — 실측이 손익분기(0.05%) 밑이면 재설계 필요(사실상 낮은 확률)</li>
-          <li><b>설치·운영 실행력</b> — 수천 개 약국 설치·유지보수·통신의 물류 난이도</li>
-          <li><b>약국 이탈·민원</b> — 소음·자리 민원, 경쟁사 더 높은 배분 제시</li>
-          <li><b>규제·소재 심의</b> — OTC/보험/금융 소재별 심의·컴플라이언스 부담</li>
+          <li><b>1단 응답률 미달</b> — 실측이 손익분기(0.05%) 밑이면 재설계(낮은 확률)</li>
+          <li><b>설치·운영 실행력</b> — 수천 개 약국 설치·유지·통신 물류 난이도</li>
+          <li><b>2단 광고주 확보</b> — 규모 전엔 외부 수요 약함(→ 그래서 후순위 배치)</li>
+          <li><b>규제·소재 심의</b> — 인터넷가입·보험·금융 소재 컴플라이언스</li>
         </ul></div>
     </div>
   </section>
 
-  <!-- 6 권고 -->
+  <!-- 권고 -->
   <section>
-    <h2 class="sec">6 · Recommendation — 권고</h2>
-    <h3 class="title">‘작게 실측 → 빠르게 확장’</h3>
+    <h2 class="sec">5 · Recommendation — 권고</h2>
+    <h3 class="title">‘1단 실측 → 빠른 확장 → 2단 점화’</h3>
     <ul class="clean">
-      <li><b>1단계 · 파일럿(50~100개 약국, 2~3개월)</b> — 목표는 단 하나: <b>스크린당 실제 월 리드·전화 수 실측</b>. 손익분기 2.5리드를 넘는지 확인.</li>
-      <li><b>2단계 · 버티컬 최적화</b> — 건강·보험·상조·요양 중 어떤 소재가 접수전화(15만)를 가장 많이 만드는지 데이터로 확정.</li>
-      <li><b>3단계 · Go/Big-Go 게이트</b> — 파일럿 스크린당 월 리드 ≥ 4건이면 <b>공격적 확장</b>. 흑자 유닛이므로 자금은 회수현금으로 상당부분 재투자 가능.</li>
-      <li><b>4단계 · 스케일</b> — 설치 전개속도가 가치를 만드므로, 설치·계약 표준화에 집중 투자해 3,000개+ 빠르게 도달.</li>
+      <li><b>1단계 · 파일럿(50~100개 약국, 2~3개월)</b> — 목표: 스크린당 실제 월 <b>인터넷가입 리드·접수전화 수</b> 실측. 손익분기 2.5리드 초과 확인.</li>
+      <li><b>2단계 · Go/Big-Go 게이트</b> — 스크린당 월 리드 ≥4건이면 공격적 확장. 흑자 유닛이라 회수현금 재투자로 자금 부담 최소.</li>
+      <li><b>3단계 · 규모 스케일</b> — 설치·계약 표준화에 집중 투자, 3,000개+ 빠르게 도달(설치속도가 곧 가치).</li>
+      <li><b>4단계 · 2단 점화</b> — 네트워크 규모를 무기로 외부 광고주 유치 + 구글/네이버 프로그래매틱 DOOH 연동, 상방 수익 개시.</li>
     </ul>
-    <div class="callout hot" style="border-left:4px solid var(--accent)"><b>최종 의견 —</b> 자체 성과광고 모델은 <b>강력히 추진할 만합니다.</b> 시장성(청중 적합성)과 수익성(회수 3개월·NPV +169억)이 모두 유망하고, 손익분기 문턱(0.05% 응답)이 매우 낮습니다. 남은 단 하나의 미지수는 실제 응답률이며, 이는 <b>2~3개월 소규모 파일럿</b>으로 확정할 수 있습니다. 큰 자본을 태우기 전 이 숫자부터 잡으십시오.</div>
+    <div class="callout hot" style="border-left:4px solid var(--accent)"><b>최종 의견 —</b> <b>강력히 추진할 만합니다.</b> 1단(인터넷 가입)이 낮은 문턱(0.05% 응답)으로 기반 흑자를 방어하고, 2단(외부 DOOH)이 규모에서 상방을 엽니다. 남은 단 하나의 미지수는 스크린당 실제 인터넷가입 발생 수이며, <b>2~3개월 소규모 파일럿</b>으로 확정 가능합니다. 이 숫자만 잡으면 확장은 회수현금으로 굴러갑니다.</div>
   </section>
 
   <footer>
-    <p><b>가정 투명성(모델 B 기본):</b> 인입 3만원·접수전화 15만원(제시값), 스크린당 월 7리드+1.5전화(성숙), 설치비 100만원, 월운영비 2.5만원, 약국배분 20%, 할인율 15%. 리드·전화 발생 수는 <b>미확증 추정</b>으로 파일럿 검증 대상. 약국 수·DOOH·규제 수치는 공개 리서치 기반.</p>
-    <p style="margin-top:10px">방법론: deep-research(적대적 팩트검증) + creating-financial-models(시나리오·민감도). 모델 A(외부 DOOH 판매)는 비교 기준으로만 표기.</p>
+    <p><b>가정 투명성(결합 기본):</b> 1단 인입 3만·접수전화 15만(제시값), 스크린당 월 7리드+1.5전화(성숙). 2단 외부DOOH 스크린당 월 10만(성숙), 3년차부터 30→60→85% 램프. 설치비 100만·월운영비 2.5만·약국배분 20%·할인율 15%. 리드·전화 발생 수와 2단 광고단가는 <b>미확증 추정</b>으로 파일럿·영업 검증 대상.</p>
+    <p style="margin-top:10px">방법론: deep-research(적대적 팩트검증) + creating-financial-models(시나리오·민감도). 모델 A(초기 외부판매 단독)는 −50억으로, 2단을 후순위로 두는 근거.</p>
   </footer>
 </div>
 
 <div class="tt" id="tt"></div>
 <script>
-function toggleTheme(){const r=document.documentElement;
-  const cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');
-  r.setAttribute('data-theme',cur==='dark'?'light':'dark');draw()}
+function toggleTheme(){const r=document.documentElement;const cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',cur==='dark'?'light':'dark');draw()}
 const NS="http://www.w3.org/2000/svg";
 function css(v){return getComputedStyle(document.body).getPropertyValue(v).trim()}
 const tt=document.getElementById('tt');
 function showTT(e,h){tt.innerHTML=h;tt.style.opacity=1;moveTT(e)}
-function moveTT(e){const p=12;let x=e.clientX+p,y=e.clientY+p;const r=tt.getBoundingClientRect();
-  if(x+r.width>innerWidth)x=e.clientX-r.width-p;if(y+r.height>innerHeight)y=e.clientY-r.height-p;
-  tt.style.left=x+'px';tt.style.top=y+'px'}
+function moveTT(e){const p=12;let x=e.clientX+p,y=e.clientY+p;const r=tt.getBoundingClientRect();if(x+r.width>innerWidth)x=e.clientX-r.width-p;if(y+r.height>innerHeight)y=e.clientY-r.height-p;tt.style.left=x+'px';tt.style.top=y+'px'}
 function hideTT(){tt.style.opacity=0}
 function el(t,a){const n=document.createElementNS(NS,t);for(const k in a)n.setAttribute(k,a[k]);return n}
+
+function drawStack(){
+  const s=document.getElementById('stack');s.innerHTML='';
+  const W=700,H=300,mL=52,mR=16,mT=16,mB=40,iw=W-mL-mR,ih=H-mT-mB;
+  const s1=[4.3,25.4,82.2,182.7,300.1], s2=[0,0,6.3,25.2,58.6];
+  const hi=380,lo=0;
+  const x=i=>mL+iw*(i+0.5)/5, y=v=>mT+ih*(hi-v)/(hi-lo);
+  const grid=css('--border'),muted=css('--muted');
+  [380,300,200,100,0].forEach(v=>{s.appendChild(el('line',{x1:mL,y1:y(v),x2:W-mR,y2:y(v),stroke:grid,'stroke-width':1}));
+    const t=el('text',{x:mL-8,y:y(v)+4,'text-anchor':'end','font-size':11,fill:muted});t.textContent=v;s.appendChild(t)});
+  const bw=iw/5*0.46;
+  s1.forEach((v,i)=>{
+    const h1=ih*v/hi, h2=ih*s2[i]/hi;
+    const y1=y(v);
+    const r1=el('rect',{x:x(i)-bw/2,y:y1,width:bw,height:Math.max(h1,1),rx:4,fill:css('--c1')});
+    r1.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년차 1단</b><br>인터넷가입 ${v}억`));r1.addEventListener('mouseleave',hideTT);s.appendChild(r1);
+    if(s2[i]>0){const r2=el('rect',{x:x(i)-bw/2,y:y(v+s2[i]),width:bw,height:Math.max(h2,1),rx:4,fill:css('--c2')});
+      r2.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년차 2단</b><br>외부DOOH ${s2[i]}억`));r2.addEventListener('mouseleave',hideTT);s.appendChild(r2);}
+    const tot=v+s2[i];
+    const tl=el('text',{x:x(i),y:y(tot)-8,'text-anchor':'middle','font-size':11,fill:css('--ink'),'font-weight':700});tl.textContent=tot.toFixed(tot<100?1:0);s.appendChild(tl);
+    const t=el('text',{x:x(i),y:H-14,'text-anchor':'middle','font-size':11,fill:muted});t.textContent=(i+1)+'년';s.appendChild(t)});
+}
 
 function drawJ(){
   const s=document.getElementById('jcurve');s.innerHTML='';
   const W=700,H=320,mL=52,mR=16,mT=18,mB=40,iw=W-mL-mR,ih=H-mT-mB;
-  const ebitda=[-2.0,10.9,50.0,121.7,205.4], cum=[-5.0,-1.1,33.9,135.6,316.0];
-  const lo=-40,hi=340;
-  const x=i=>mL+iw*(i+0.5)/5, y=v=>mT+ih*(hi-v)/(hi-lo);
+  const ebitda=[-2.0,10.9,55.1,141.8,252.3], cum=[-5.0,-1.1,39.0,160.8,388.1];
+  const lo=-40,hi=400, x=i=>mL+iw*(i+0.5)/5, y=v=>mT+ih*(hi-v)/(hi-lo);
   const grid=css('--border'),muted=css('--muted');
-  [340,250,150,50,0,-40].forEach(v=>{
-    s.appendChild(el('line',{x1:mL,y1:y(v),x2:W-mR,y2:y(v),stroke:grid,'stroke-width':v===0?1.5:1}));
+  [400,300,200,100,0,-40].forEach(v=>{s.appendChild(el('line',{x1:mL,y1:y(v),x2:W-mR,y2:y(v),stroke:grid,'stroke-width':v===0?1.5:1}));
     const t=el('text',{x:mL-8,y:y(v)+4,'text-anchor':'end','font-size':11,fill:muted});t.textContent=v;s.appendChild(t)});
   const bw=iw/5*0.42;
-  ebitda.forEach((v,i)=>{
-    const yy=Math.min(y(v),y(0)),h=Math.abs(y(v)-y(0));
-    const c=v>=0?css('--c1'):css('--neg');
+  ebitda.forEach((v,i)=>{const yy=Math.min(y(v),y(0)),h=Math.abs(y(v)-y(0));const c=v>=0?css('--c1'):css('--neg');
     const r=el('rect',{x:x(i)-bw/2,y:yy,width:bw,height:Math.max(h,1),rx:4,fill:c,opacity:.9});
-    r.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년차 EBITDA</b><br>${v>=0?'+':''}${v}억`));
-    r.addEventListener('mouseleave',hideTT);s.appendChild(r);
+    r.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년차 EBITDA</b><br>${v>=0?'+':''}${v}억`));r.addEventListener('mouseleave',hideTT);s.appendChild(r);
     const t=el('text',{x:x(i),y:H-14,'text-anchor':'middle','font-size':11,fill:muted});t.textContent=(i+1)+'년';s.appendChild(t)});
   let d='';cum.forEach((v,i)=>d+=(i?'L':'M')+x(i)+' '+y(v)+' ');
   s.appendChild(el('path',{d,fill:'none',stroke:css('--c2'),'stroke-width':2.5,'stroke-linejoin':'round'}));
-  cum.forEach((v,i)=>{
-    const c=el('circle',{cx:x(i),cy:y(v),r:5,fill:css('--surface'),stroke:css('--c2'),'stroke-width':2.5});
-    c.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년차 누적현금</b><br>${v>=0?'+':''}${v}억`));
-    c.addEventListener('mouseleave',hideTT);s.appendChild(c);
+  cum.forEach((v,i)=>{const c=el('circle',{cx:x(i),cy:y(v),r:5,fill:css('--surface'),stroke:css('--c2'),'stroke-width':2.5});
+    c.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년차 누적현금</b><br>${v>=0?'+':''}${v}억`));c.addEventListener('mouseleave',hideTT);s.appendChild(c);
     const t=el('text',{x:x(i),y:y(v)-11,'text-anchor':'middle','font-size':11,fill:css('--c2'),'font-weight':700});t.textContent=(v>=0?'+':'')+v;s.appendChild(t)});
 }
 
 function drawTornado(){
   const s=document.getElementById('tornado');s.innerHTML='';
-  const base=169.4;
-  const data=[['설치 전개속도',108.5,230.3],['스크린당 전화수',128.4,210.5],['스크린당 리드수',131.1,207.7],
-    ['전환 성숙속도',116.5,177.9],['약국 배분율',152.9,186.0],['스크린 설치비',156.9,181.9],['본사 고정비',162.7,176.2]];
-  const W=340,H=260,mL=86,mR=10,mT=8,mB=26,iw=W-mL-mR,ih=H-mT-mB;
-  const lo=100,hi=240,x=v=>mL+iw*(v-lo)/(hi-lo),bh=ih/data.length*0.6;
+  const base=207.6;
+  const data=[['설치 전개속도',135,280],['스크린당 전화수',167,249],['스크린당 리드수',169,246],['전환 성숙속도',155,216],['약국 배분율',189,227],['2단 외부DOOH 단가',192,223],['스크린 설치비',195,220]];
+  const W=680,H=250,mL=120,mR=16,mT=8,mB=28,iw=W-mL-mR,ih=H-mT-mB;
+  const lo=128,hi=288,x=v=>mL+iw*(v-lo)/(hi-lo),bh=ih/data.length*0.6;
   s.appendChild(el('line',{x1:x(base),y1:mT,x2:x(base),y2:mT+ih,stroke:css('--muted'),'stroke-width':1.5,'stroke-dasharray':'3 3'}));
   data.forEach((d,i)=>{const cy=mT+ih*(i+0.5)/data.length;const x1=x(Math.min(d[1],d[2])),x2=x(Math.max(d[1],d[2]));
     const r=el('rect',{x:x1,y:cy-bh/2,width:x2-x1,height:bh,rx:4,fill:css('--c2'),opacity:.85});
-    r.addEventListener('mousemove',e=>showTT(e,`<b>${d[0]}</b><br>NPV +${d[1]}억 ~ +${d[2]}억`));
-    r.addEventListener('mouseleave',hideTT);s.appendChild(r);
-    const t=el('text',{x:mL-6,y:cy+3.5,'text-anchor':'end','font-size':9.5,fill:css('--ink2')});
-    t.textContent=d[0];s.appendChild(t)});
-  const bt=el('text',{x:x(base),y:H-8,'text-anchor':'middle','font-size':10,fill:css('--muted')});bt.textContent='기본 +169억';s.appendChild(bt);
+    r.addEventListener('mousemove',e=>showTT(e,`<b>${d[0]}</b><br>NPV +${d[1]}억 ~ +${d[2]}억`));r.addEventListener('mouseleave',hideTT);s.appendChild(r);
+    const t=el('text',{x:mL-8,y:cy+3.5,'text-anchor':'end','font-size':11.5,fill:css('--ink2')});t.textContent=d[0];s.appendChild(t)});
+  const bt=el('text',{x:x(base),y:H-8,'text-anchor':'middle','font-size':10.5,fill:css('--muted')});bt.textContent='기본 +208억';s.appendChild(bt);
 }
-
-function drawHeat(){
-  const s=document.getElementById('heat');s.innerHTML='';
-  const rows=['14','10','7','5','3'],cols=['0.5','1.0','1.5','2.5','3.5'];
-  const V=[[205.9,251.5,297.2,388.4,479.6],[132.9,178.6,224.2,315.4,406.6],[78.2,123.8,169.4,260.7,351.9],[41.7,87.3,132.9,224.2,315.4],[5.2,50.8,96.4,187.7,278.9]];
-  const W=340,H=250,mL=40,mR=10,mT=10,mB=42,iw=W-mL-mR,ih=H-mT-mB;
-  const cw=iw/cols.length,ch=ih/rows.length,max=480;
-  function hx(c){c=c.trim();if(c.startsWith('rgb'))return c.match(/\d+/g).map(Number);c=c.replace('#','');if(c.length===3)c=c.split('').map(x=>x+x).join('');return[parseInt(c.substr(0,2),16),parseInt(c.substr(2,2),16),parseInt(c.substr(4,2),16)]}
-  function mix(a,b,t){const pa=hx(a),pb=hx(b);return`rgb(${Math.round(pa[0]+(pb[0]-pa[0])*t)},${Math.round(pa[1]+(pb[1]-pa[1])*t)},${Math.round(pa[2]+(pb[2]-pa[2])*t)})`}
-  const col=v=>mix(css('--surface3'),css('--c1'),.18+Math.min(v/max,1)*.72);
-  rows.forEach((rl,i)=>{cols.forEach((cl,j)=>{const v=V[i][j];
-    const g=el('rect',{x:mL+cw*j+1.5,y:mT+ch*i+1.5,width:cw-3,height:ch-3,rx:5,fill:col(v)});
-    g.addEventListener('mousemove',e=>showTT(e,`<b>월 ${rl}리드 · ${cl}전화</b><br>NPV +${v}억`));
-    g.addEventListener('mouseleave',hideTT);s.appendChild(g);
-    const t=el('text',{x:mL+cw*j+cw/2,y:mT+ch*i+ch/2+3.5,'text-anchor':'middle','font-size':9.5,fill:v>250?'#fff':css('--ink'),'font-weight':600});t.textContent=v;s.appendChild(t)});
-    const t=el('text',{x:mL-6,y:mT+ch*i+ch/2+3.5,'text-anchor':'end','font-size':10,fill:css('--ink2')});t.textContent=rl;s.appendChild(t)});
-  cols.forEach((cl,j)=>{const t=el('text',{x:mL+cw*j+cw/2,y:H-24,'text-anchor':'middle','font-size':10,fill:css('--ink2')});t.textContent=cl;s.appendChild(t)});
-  const xl=el('text',{x:mL+iw/2,y:H-8,'text-anchor':'middle','font-size':10,fill:css('--muted')});xl.textContent='← 월 접수전화 수 →';s.appendChild(xl);
-  const yl=el('text',{x:12,y:mT+ih/2,'text-anchor':'middle','font-size':10,fill:css('--muted'),transform:`rotate(-90 12 ${mT+ih/2})`});yl.textContent='월 리드 수';s.appendChild(yl);
-}
-function draw(){drawJ();drawTornado();drawHeat()}
+function draw(){drawStack();drawJ();drawTornado()}
 draw();
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
 </script>
