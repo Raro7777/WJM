@@ -90,7 +90,7 @@
   <div class="wrap">
     <div class="eyebrow">인터랙티브 사업성 모델 · 값을 바꿔 보세요</div>
     <h1>약국 사이니지 — 수익성 시뮬레이터</h1>
-    <p>1단(인터넷 가입 성과광고): 스크린 월매출 = 인입건수×3만 + 접수건수×접수마진, 접수=인입×성공율. + 2단(외부·프로그래매틱 DOOH). 왼쪽 값을 바꾸면 KPI·차트·표가 즉시 재계산됩니다.</p>
+    <p>스크린당 월매출 = <b>인입비</b>(인입×3만) + <b>접수마진</b>(인입×성공율×마진) + <b>외부광고</b>(건강식품 등 2단). 왼쪽 값을 바꾸면 KPI·유닛이코노믹스·차트·표가 즉시 재계산됩니다.</p>
   </div>
 </header>
 
@@ -100,12 +100,16 @@
     <aside class="panel">
       <h3>가정 조절</h3>
 
-      <div class="ctrl"><label>시나리오 <span class="hint">(리드수·설치속도·비용 세트)</span></label>
+      <div class="ctrl"><label>시나리오 <span class="hint">(전환성숙·비용 세트)</span></label>
         <div class="pills" id="p-scn">
           <div class="pill" data-v="worst">비관</div>
           <div class="pill on" data-v="base">기본</div>
           <div class="pill" data-v="best">낙관</div>
         </div>
+      </div>
+
+      <div class="ctrl"><label>5년차 목표 약국 수 · <span class="slideval" id="lv-target">7,000</span>개 <span class="hint">(설치 전개 스케일)</span></label>
+        <input type="range" id="s-target" min="1000" max="15000" step="500" value="7000">
       </div>
 
       <div class="ctrl"><label>스크린당 월 인입 수 · <span class="slideval" id="lv-leads">5.0</span>건 <span class="hint">(약국 유동인구 불확실)</span></label>
@@ -139,6 +143,7 @@
 
       <div class="ctrl">
         <div class="row"><label>인입 단가</label><input type="number" id="i-lead" value="30000" step="5000"><span class="unit">원</span></div>
+        <div class="row"><label>외부광고 월매출<br><span class="hint">건강식품 등 2단</span></label><input type="number" id="i-ext" value="100000" step="10000"><span class="unit">원</span></div>
         <div class="row"><label>스크린 설치비</label><input type="number" id="i-capex" value="1000000" step="100000"><span class="unit">원</span></div>
         <div class="row"><label>스크린 월운영비</label><input type="number" id="i-opex" value="25000" step="5000"><span class="unit">원</span></div>
       </div>
@@ -156,15 +161,15 @@
       <div class="kpis" id="kpis"></div>
 
       <div class="card">
-        <h4>스크린 1대 월 유닛 이코노믹스 <span class="sub" style="display:inline">· 성숙기(1단) 기준</span></h4>
+        <h4>스크린 1대 월 유닛 이코노믹스 <span class="sub" style="display:inline">· 성숙기(1+2단) 기준 · 외부광고는 규모 도달 후 가동</span></h4>
         <p class="sub" id="unit-sub"></p>
         <div class="waterfall" id="waterfall"></div>
       </div>
 
       <div class="card">
-        <h4>매출 성장 (2단 로켓)</h4>
-        <p class="sub">연도별 총매출 = 1단(인터넷가입) + 2단(외부 DOOH). 단위 억원</p>
-        <div class="legend"><span><i style="background:var(--c1)"></i>1단 인터넷가입</span><span><i style="background:var(--c2)"></i>2단 외부DOOH</span></div>
+        <h4>매출 성장 (수익원 분해)</h4>
+        <p class="sub">연도별 총매출 = 인입비 + 접수마진 + 2단 외부 DOOH. 단위 억원</p>
+        <div class="legend"><span><i style="background:var(--c1)"></i>인입비 매출</span><span><i style="background:var(--c3)"></i>접수마진 매출</span><span><i style="background:var(--c2)"></i>2단 외부DOOH</span></div>
         <div class="chart-wrap"><svg id="stack" viewBox="0 0 720 280"></svg></div>
       </div>
 
@@ -202,18 +207,24 @@ const SC={
   best: {leads:14,install:[500,1800,4000,7000,11000],capex:0.75e6,opex:18000, ext:200000, sga:[4,6.5,9,11.5,14.5],resp:[.65,.85,1,1,1]},
 };
 const EXT_RAMP=[0,0,.30,.60,.85], DR=0.15, FLAT=50000, PCT=0.30;
-const ST={scn:'base', conv:0.20, comp:'flat', leads:5, leadPrice:30000, convMargin:100000, capex:1e6, opex:25000, sgaMul:1.0};
+const SHAPE=[0.043,0.143,0.357,0.643,1.0]; // 설치 전개 곡선 (목표치의 비율)
+const ST={scn:'base', conv:0.20, comp:'flat', target:7000, leads:5, leadPrice:30000, convMargin:100000, ext:100000, capex:1e6, opex:25000, sgaMul:1.0};
 
-function selfRevMo(){return ST.leads*ST.leadPrice + ST.leads*ST.conv*ST.convMargin;}
 function compute(){
-  const S=SC[ST.scn], inst=S.install, prev=[0,...inst.slice(0,4)];
-  const added=inst.map((v,i)=>v-prev[i]);
-  const srmax=selfRevMo();
+  const S=SC[ST.scn];
+  const inst=SHAPE.map(f=>Math.round(f*ST.target));
+  const prev=[0,...inst.slice(0,4)];
+  const added=inst.map((v,i)=>Math.max(v-prev[i],0));
+  const leadRevMo=ST.leads*ST.leadPrice;                 // 인입비 매출/스크린/월
+  const marginMo=ST.leads*ST.conv*ST.convMargin;         // 접수마진 매출/스크린/월
+  const srmax=leadRevMo+marginMo+ST.ext;                 // 성숙 스크린 월매출(1+2단)
   let cum=0; const rows=[]; const fcfs=[];
   for(let y=0;y<5;y++){
     const avg=(prev[y]+inst[y])/2;
-    const selfG=avg*srmax*12*S.resp[y];
-    const extG=avg*S.ext*12*EXT_RAMP[y];
+    const leadG=avg*leadRevMo*12*S.resp[y];
+    const marginG=avg*marginMo*12*S.resp[y];
+    const selfG=leadG+marginG;
+    const extG=avg*ST.ext*12*EXT_RAMP[y];
     const gross=selfG+extG;
     const payout = ST.comp==='flat' ? avg*FLAT*12 : gross*PCT;
     const opex=avg*ST.opex*12;
@@ -221,15 +232,14 @@ function compute(){
     const ebitda=gross-payout-opex-sga;
     const capex=added[y]*ST.capex;
     const fcf=ebitda-capex; cum+=fcf; fcfs.push(fcf);
-    rows.push({y:y+1,inst:inst[y],avg,selfG,extG,gross,payout,opex,sga,ebitda,capex,fcf,cum});
+    rows.push({y:y+1,inst:inst[y],avg,leadG,marginG,selfG,extG,gross,payout,opex,sga,ebitda,capex,fcf,cum});
   }
   const npv=fcfs.reduce((a,f,i)=>a+f/Math.pow(1+DR,i+1),0);
   const peak=-Math.min(...rows.map(r=>r.cum));
-  // unit (mature, stage1)
   const payoutMo = ST.comp==='flat'? FLAT : srmax*PCT;
   const contrib=srmax-payoutMo-ST.opex;
   const payback=contrib>0?ST.capex/(contrib*12):Infinity;
-  return {rows,npv,peak,srmax,payoutMo,contrib,payback};
+  return {rows,npv,peak,srmax,leadRevMo,marginMo,extMo:ST.ext,payoutMo,contrib,payback};
 }
 // ---------- FORMAT ----------
 function won(x){const s=x<0?'−':'';x=Math.abs(x);
@@ -253,13 +263,15 @@ function renderKPI(R){
 function renderUnit(R){
   const convCnt=ST.leads*ST.conv, cac=ST.leadPrice/ST.conv;
   document.getElementById('unit-sub').innerHTML=
-    `스크린당 월매출 <b>${won(R.srmax)}</b> = 인입매출 ${ST.leads}건×${won(ST.leadPrice)} + 접수마진 ${convCnt.toFixed(1)}건×${won(ST.convMargin)}`
-    +` <span style="color:var(--muted)">· 성공율 ${Math.round(ST.conv*100)}% · 접수비(참고 CAC) ${won(cac)}/건</span>`;
+    `스크린당 월매출 <b>${won(R.srmax)}</b> = 인입 ${won(R.leadRevMo)} + 접수마진 ${won(R.marginMo)} + 외부광고 ${won(R.extMo)}`
+    +` <span style="color:var(--muted)">· 성공율 ${Math.round(ST.conv*100)}% · 접수 ${convCnt.toFixed(1)}건 · 접수비(참고 CAC) ${won(cac)}/건</span>`;
   const rev=R.srmax, pay=R.payoutMo, op=ST.opex, con=R.contrib;
   const max=rev;
-  const bar=(v,color,off)=>`<div class="wf-bar"><span style="left:${off/max*100}%;width:${Math.abs(v)/max*100}%;background:${color}"></span></div>`;
+  const bar=(v,color,off)=>`<div class="wf-bar"><span style="left:${off/max*100}%;width:${Math.max(Math.abs(v)/max*100,0.5)}%;background:${color}"></span></div>`;
   const rows=[
-    ['스크린 월매출', rev, 'var(--c1)', 0, '', rev],
+    ['인입비 매출', R.leadRevMo, 'var(--c1)', 0, '', R.leadRevMo],
+    ['＋ 접수마진 매출', R.marginMo, 'var(--c3)', R.leadRevMo, '', R.marginMo],
+    ['＋ 외부광고 매출', R.extMo, 'var(--c2)', R.leadRevMo+R.marginMo, '', R.extMo],
     ['− 약국 배분', -pay, 'var(--neg)', rev-pay, 'neg', -pay],
     ['− 스크린 운영비', -op, 'var(--neg)', rev-pay-op, 'neg', -op],
     ['= 월 기여이익', con, con>=0?'var(--pos)':'var(--neg)', 0, con>=0?'pos':'neg', con, true],
@@ -269,8 +281,8 @@ function renderUnit(R){
   ).join('') + `<div class="wf-row"><div class="wl">투자회수(설치비 ${won(ST.capex)})</div><div style="font-size:12px;color:var(--muted)">＝ ${R.payback===Infinity?'불가':R.payback.toFixed(2)+'년'}</div><div></div></div>`;
 }
 function renderPNL(R){
-  const h=`<thead><tr><th>연차</th><th>설치</th><th>1단매출</th><th>2단매출</th><th>총매출</th><th>약국배분</th><th>운영비합</th><th>본사비</th><th>EBITDA</th><th>누적현금</th></tr></thead>`;
-  const b=R.rows.map(r=>`<tr><td class="lbl">${r.y}년</td><td class="num">${r.inst.toLocaleString()}</td><td class="num">${won(r.selfG)}</td><td class="num">${r.extG?won(r.extG):'–'}</td><td class="num">${won(r.gross)}</td><td class="num">${won(r.payout)}</td><td class="num">${won(r.opex)}</td><td class="num">${won(r.sga)}</td><td class="num ${r.ebitda>=0?'cell-pos':'cell-neg'}">${won(r.ebitda)}</td><td class="num ${r.cum>=0?'cell-pos':'cell-neg'}">${won(r.cum)}</td></tr>`).join('');
+  const h=`<thead><tr><th>연차</th><th>설치</th><th>인입비</th><th>접수마진</th><th>2단DOOH</th><th>총매출</th><th>약국배분</th><th>운영비</th><th>본사비</th><th>EBITDA</th><th>누적현금</th></tr></thead>`;
+  const b=R.rows.map(r=>`<tr><td class="lbl">${r.y}년</td><td class="num">${r.inst.toLocaleString()}</td><td class="num">${won(r.leadG)}</td><td class="num">${won(r.marginG)}</td><td class="num">${r.extG?won(r.extG):'–'}</td><td class="num">${won(r.gross)}</td><td class="num">${won(r.payout)}</td><td class="num">${won(r.opex)}</td><td class="num">${won(r.sga)}</td><td class="num ${r.ebitda>=0?'cell-pos':'cell-neg'}">${won(r.ebitda)}</td><td class="num ${r.cum>=0?'cell-pos':'cell-neg'}">${won(r.cum)}</td></tr>`).join('');
   document.getElementById('pnl').innerHTML=h+'<tbody>'+b+'</tbody>';
 }
 // charts
@@ -282,17 +294,18 @@ function E(t,a){const n=document.createElementNS(NS,t);for(const k in a)n.setAtt
 function renderStack(R){
   const s=document.getElementById('stack');s.innerHTML='';
   const W=720,H=280,mL=48,mR=14,mT=16,mB=36,iw=W-mL-mR,ih=H-mT-mB;
-  const s1=R.rows.map(r=>eok(r.selfG)), s2=R.rows.map(r=>eok(r.extG));
-  const tot=R.rows.map((r,i)=>s1[i]+s2[i]); const hi=Math.max(...tot)*1.15||1;
+  const a=R.rows.map(r=>eok(r.leadG)), b=R.rows.map(r=>eok(r.marginG)), c=R.rows.map(r=>eok(r.extG));
+  const tot=R.rows.map((r,i)=>a[i]+b[i]+c[i]); const hi=Math.max(...tot)*1.15||1;
   const x=i=>mL+iw*(i+0.5)/5, y=v=>mT+ih*(1-v/hi);
   const grid=css('--border'),muted=css('--muted');
   for(let g=0;g<=4;g++){const v=hi*g/4;s.appendChild(E('line',{x1:mL,y1:y(v),x2:W-mR,y2:y(v),stroke:grid,'stroke-width':1}));const t=E('text',{x:mL-7,y:y(v)+4,'text-anchor':'end','font-size':11,fill:muted});t.textContent=Math.round(v);s.appendChild(t);}
   const bw=iw/5*0.46;
-  s1.forEach((v,i)=>{
-    const r1=E('rect',{x:x(i)-bw/2,y:y(v),width:bw,height:Math.max(ih*v/hi,1),rx:4,fill:css('--c1')});
-    r1.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년 1단</b> ${v.toFixed(1)}억`));r1.addEventListener('mouseleave',hd);s.appendChild(r1);
-    if(s2[i]>0.05){const r2=E('rect',{x:x(i)-bw/2,y:y(v+s2[i]),width:bw,height:Math.max(ih*s2[i]/hi,1),rx:4,fill:css('--c2')});
-      r2.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년 2단</b> ${s2[i].toFixed(1)}억`));r2.addEventListener('mouseleave',hd);s.appendChild(r2);}
+  const seg=(i,val,base,color,name)=>{if(val<=0.02)return;const r=E('rect',{x:x(i)-bw/2,y:y(base+val),width:bw,height:Math.max(ih*val/hi,1),rx:3,fill:color});
+    r.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년 ${name}</b> ${val.toFixed(1)}억`));r.addEventListener('mouseleave',hd);s.appendChild(r);};
+  a.forEach((_,i)=>{
+    seg(i,a[i],0,css('--c1'),'인입비');
+    seg(i,b[i],a[i],css('--c3'),'접수마진');
+    seg(i,c[i],a[i]+b[i],css('--c2'),'2단DOOH');
     const tl=E('text',{x:x(i),y:y(tot[i])-7,'text-anchor':'middle','font-size':11,fill:css('--ink'),'font-weight':700});tl.textContent=tot[i]<100?tot[i].toFixed(0):Math.round(tot[i]);s.appendChild(tl);
     const t=E('text',{x:x(i),y:H-13,'text-anchor':'middle','font-size':11,fill:muted});t.textContent=(i+1)+'년';s.appendChild(t);
   });
@@ -323,23 +336,25 @@ function draw(){const R=compute();renderKPI(R);renderUnit(R);renderStack(R);rend
 function pillGroup(id,key,cast){document.querySelectorAll('#'+id+' .pill').forEach(p=>p.addEventListener('click',()=>{
   document.querySelectorAll('#'+id+' .pill').forEach(q=>q.classList.remove('on'));p.classList.add('on');
   ST[key]=cast(p.dataset.v);
-  if(key==='scn'){ST.capex=SC[ST.scn].capex;ST.opex=SC[ST.scn].opex;
-    document.getElementById('i-capex').value=ST.capex;document.getElementById('i-opex').value=ST.opex;}
+  if(key==='scn'){ST.capex=SC[ST.scn].capex;ST.opex=SC[ST.scn].opex;ST.ext=SC[ST.scn].ext;
+    document.getElementById('i-capex').value=ST.capex;document.getElementById('i-opex').value=ST.opex;document.getElementById('i-ext').value=ST.ext;}
   draw();}));}
 pillGroup('p-scn','scn',v=>v); pillGroup('p-conv','conv',v=>+v); pillGroup('p-comp','comp',v=>v); pillGroup('p-margin','convMargin',v=>+v);
+document.getElementById('s-target').addEventListener('input',e=>{ST.target=+e.target.value;document.getElementById('lv-target').textContent=ST.target.toLocaleString();draw();});
 document.getElementById('s-leads').addEventListener('input',e=>{ST.leads=+e.target.value;document.getElementById('lv-leads').textContent=ST.leads.toFixed(1);draw();});
 document.getElementById('s-sga').addEventListener('input',e=>{ST.sgaMul=+e.target.value;document.getElementById('lv-sga').textContent=ST.sgaMul.toFixed(1);draw();});
-[['i-lead','leadPrice'],['i-capex','capex'],['i-opex','opex']].forEach(([id,k])=>
+[['i-lead','leadPrice'],['i-ext','ext'],['i-capex','capex'],['i-opex','opex']].forEach(([id,k])=>
   document.getElementById(id).addEventListener('input',e=>{ST[k]=+e.target.value||0;draw();}));
-function resetAll(){Object.assign(ST,{scn:'base',conv:0.20,comp:'flat',leads:5,leadPrice:30000,convMargin:100000,capex:1e6,opex:25000,sgaMul:1.0});
+function resetAll(){Object.assign(ST,{scn:'base',conv:0.20,comp:'flat',target:7000,leads:5,leadPrice:30000,convMargin:100000,ext:100000,capex:1e6,opex:25000,sgaMul:1.0});
   document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));
   document.querySelector('#p-scn [data-v=base]').classList.add('on');
   document.querySelector('#p-conv [data-v="0.20"]').classList.add('on');
   document.querySelector('#p-margin [data-v="100000"]').classList.add('on');
   document.querySelector('#p-comp [data-v=flat]').classList.add('on');
+  document.getElementById('s-target').value=7000;document.getElementById('lv-target').textContent='7,000';
   document.getElementById('s-leads').value=5;document.getElementById('lv-leads').textContent='5.0';
   document.getElementById('s-sga').value=1;document.getElementById('lv-sga').textContent='1.0';
-  document.getElementById('i-lead').value=30000;
+  document.getElementById('i-lead').value=30000;document.getElementById('i-ext').value=100000;
   document.getElementById('i-capex').value=1000000;document.getElementById('i-opex').value=25000;draw();}
 function toggleTheme(){const r=document.documentElement;const cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',cur==='dark'?'light':'dark');draw();}
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
