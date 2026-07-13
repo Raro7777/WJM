@@ -90,7 +90,7 @@
   <div class="wrap">
     <div class="eyebrow">인터랙티브 사업성 모델 · 값을 바꿔 보세요</div>
     <h1>약국 사이니지 — 수익성 시뮬레이터</h1>
-    <p>1단(인터넷 가입 성과광고: 인입 3만 + 접수 전환마진 10만) + 2단(외부·프로그래매틱 DOOH). 왼쪽 값을 바꾸면 KPI·차트·표가 즉시 재계산됩니다.</p>
+    <p>1단(인터넷 가입 성과광고): 스크린 월매출 = 인입건수×3만 + 접수건수×접수마진, 접수=인입×성공율. + 2단(외부·프로그래매틱 DOOH). 왼쪽 값을 바꾸면 KPI·차트·표가 즉시 재계산됩니다.</p>
   </div>
 </header>
 
@@ -108,12 +108,25 @@
         </div>
       </div>
 
-      <div class="ctrl"><label>인입→접수 전환율 <span class="hint">(성공 확률)</span></label>
+      <div class="ctrl"><label>스크린당 월 인입 수 · <span class="slideval" id="lv-leads">5.0</span>건 <span class="hint">(약국 유동인구 불확실)</span></label>
+        <input type="range" id="s-leads" min="1" max="10" step="1" value="5">
+      </div>
+
+      <div class="ctrl"><label>성공율 <span class="hint">(인입→접수 전환)</span></label>
         <div class="pills" id="p-conv">
           <div class="pill" data-v="0.10">10%</div>
+          <div class="pill" data-v="0.15">15%</div>
           <div class="pill on" data-v="0.20">20%</div>
+          <div class="pill" data-v="0.25">25%</div>
           <div class="pill" data-v="0.30">30%</div>
-          <div class="pill" data-v="0.40">40%</div>
+        </div>
+      </div>
+
+      <div class="ctrl"><label>접수건당 마진</label>
+        <div class="pills" id="p-margin">
+          <div class="pill on" data-v="100000">10만</div>
+          <div class="pill" data-v="150000">15만</div>
+          <div class="pill" data-v="200000">20만</div>
         </div>
       </div>
 
@@ -124,13 +137,8 @@
         </div>
       </div>
 
-      <div class="ctrl"><label>스크린당 월 인입(리드) 수 · <span class="slideval" id="lv-leads">7.0</span>건</label>
-        <input type="range" id="s-leads" min="1" max="20" step="0.5" value="7">
-      </div>
-
       <div class="ctrl">
         <div class="row"><label>인입 단가</label><input type="number" id="i-lead" value="30000" step="5000"><span class="unit">원</span></div>
-        <div class="row"><label>접수 전환마진</label><input type="number" id="i-conv" value="100000" step="10000"><span class="unit">원</span></div>
         <div class="row"><label>스크린 설치비</label><input type="number" id="i-capex" value="1000000" step="100000"><span class="unit">원</span></div>
         <div class="row"><label>스크린 월운영비</label><input type="number" id="i-opex" value="25000" step="5000"><span class="unit">원</span></div>
       </div>
@@ -194,7 +202,7 @@ const SC={
   best: {leads:14,install:[500,1800,4000,7000,11000],capex:0.75e6,opex:18000, ext:200000, sga:[4,6.5,9,11.5,14.5],resp:[.65,.85,1,1,1]},
 };
 const EXT_RAMP=[0,0,.30,.60,.85], DR=0.15, FLAT=50000, PCT=0.30;
-const ST={scn:'base', conv:0.20, comp:'flat', leads:7, leadPrice:30000, convMargin:100000, capex:1e6, opex:25000, sgaMul:1.0};
+const ST={scn:'base', conv:0.20, comp:'flat', leads:5, leadPrice:30000, convMargin:100000, capex:1e6, opex:25000, sgaMul:1.0};
 
 function selfRevMo(){return ST.leads*ST.leadPrice + ST.leads*ST.conv*ST.convMargin;}
 function compute(){
@@ -243,8 +251,10 @@ function renderKPI(R){
   el.innerHTML=cells.map(c=>`<div class="kpi ${c[3]}"><div class="k">${c[0]}</div><div class="v">${c[1]}</div><div class="s">${c[2]}</div></div>`).join('');
 }
 function renderUnit(R){
-  document.getElementById('unit-sub').textContent=
-    `스크린당 월매출 ${won(R.srmax)} = 인입 ${ST.leads}건×${won(ST.leadPrice)} + 접수 ${(ST.leads*ST.conv).toFixed(1)}건×${won(ST.convMargin)} (전환율 ${Math.round(ST.conv*100)}%)`;
+  const convCnt=ST.leads*ST.conv, cac=ST.leadPrice/ST.conv;
+  document.getElementById('unit-sub').innerHTML=
+    `스크린당 월매출 <b>${won(R.srmax)}</b> = 인입매출 ${ST.leads}건×${won(ST.leadPrice)} + 접수마진 ${convCnt.toFixed(1)}건×${won(ST.convMargin)}`
+    +` <span style="color:var(--muted)">· 성공율 ${Math.round(ST.conv*100)}% · 접수비(참고 CAC) ${won(cac)}/건</span>`;
   const rev=R.srmax, pay=R.payoutMo, op=ST.opex, con=R.contrib;
   const max=rev;
   const bar=(v,color,off)=>`<div class="wf-bar"><span style="left:${off/max*100}%;width:${Math.abs(v)/max*100}%;background:${color}"></span></div>`;
@@ -313,23 +323,23 @@ function draw(){const R=compute();renderKPI(R);renderUnit(R);renderStack(R);rend
 function pillGroup(id,key,cast){document.querySelectorAll('#'+id+' .pill').forEach(p=>p.addEventListener('click',()=>{
   document.querySelectorAll('#'+id+' .pill').forEach(q=>q.classList.remove('on'));p.classList.add('on');
   ST[key]=cast(p.dataset.v);
-  if(key==='scn'){ST.leads=SC[ST.scn].leads;ST.capex=SC[ST.scn].capex;ST.opex=SC[ST.scn].opex;
-    document.getElementById('s-leads').value=ST.leads;document.getElementById('lv-leads').textContent=ST.leads.toFixed(1);
+  if(key==='scn'){ST.capex=SC[ST.scn].capex;ST.opex=SC[ST.scn].opex;
     document.getElementById('i-capex').value=ST.capex;document.getElementById('i-opex').value=ST.opex;}
   draw();}));}
-pillGroup('p-scn','scn',v=>v); pillGroup('p-conv','conv',v=>+v); pillGroup('p-comp','comp',v=>v);
+pillGroup('p-scn','scn',v=>v); pillGroup('p-conv','conv',v=>+v); pillGroup('p-comp','comp',v=>v); pillGroup('p-margin','convMargin',v=>+v);
 document.getElementById('s-leads').addEventListener('input',e=>{ST.leads=+e.target.value;document.getElementById('lv-leads').textContent=ST.leads.toFixed(1);draw();});
 document.getElementById('s-sga').addEventListener('input',e=>{ST.sgaMul=+e.target.value;document.getElementById('lv-sga').textContent=ST.sgaMul.toFixed(1);draw();});
-[['i-lead','leadPrice'],['i-conv','convMargin'],['i-capex','capex'],['i-opex','opex']].forEach(([id,k])=>
+[['i-lead','leadPrice'],['i-capex','capex'],['i-opex','opex']].forEach(([id,k])=>
   document.getElementById(id).addEventListener('input',e=>{ST[k]=+e.target.value||0;draw();}));
-function resetAll(){Object.assign(ST,{scn:'base',conv:0.20,comp:'flat',leads:7,leadPrice:30000,convMargin:100000,capex:1e6,opex:25000,sgaMul:1.0});
+function resetAll(){Object.assign(ST,{scn:'base',conv:0.20,comp:'flat',leads:5,leadPrice:30000,convMargin:100000,capex:1e6,opex:25000,sgaMul:1.0});
   document.querySelectorAll('.pill').forEach(p=>p.classList.remove('on'));
   document.querySelector('#p-scn [data-v=base]').classList.add('on');
   document.querySelector('#p-conv [data-v="0.20"]').classList.add('on');
+  document.querySelector('#p-margin [data-v="100000"]').classList.add('on');
   document.querySelector('#p-comp [data-v=flat]').classList.add('on');
-  document.getElementById('s-leads').value=7;document.getElementById('lv-leads').textContent='7.0';
+  document.getElementById('s-leads').value=5;document.getElementById('lv-leads').textContent='5.0';
   document.getElementById('s-sga').value=1;document.getElementById('lv-sga').textContent='1.0';
-  document.getElementById('i-lead').value=30000;document.getElementById('i-conv').value=100000;
+  document.getElementById('i-lead').value=30000;
   document.getElementById('i-capex').value=1000000;document.getElementById('i-opex').value=25000;draw();}
 function toggleTheme(){const r=document.documentElement;const cur=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',cur==='dark'?'light':'dark');draw();}
 matchMedia('(prefers-color-scheme:dark)').addEventListener('change',draw);
