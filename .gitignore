@@ -5,3 +5,4 @@ dist-web
 release
 .env
 *.log
+**/__pycache__/
