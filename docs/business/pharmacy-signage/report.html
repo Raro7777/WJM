@@ -174,6 +174,13 @@
       </div>
 
       <div class="card">
+        <h4>연간 지출 비용 (매년 쓰는 돈)</h4>
+        <p class="sub">설비투자 + 약국배분 + 스크린운영비 + 본사고정비 · 단위 억원</p>
+        <div class="legend"><span><i style="background:var(--c4)"></i>설비투자(설치)</span><span><i style="background:var(--c3)"></i>약국배분</span><span><i style="background:var(--c2)"></i>스크린운영비</span><span><i style="background:var(--neg)"></i>본사고정비</span></div>
+        <div class="chart-wrap"><svg id="cost" viewBox="0 0 720 280"></svg></div>
+      </div>
+
+      <div class="card">
         <h4>현금흐름 J커브</h4>
         <p class="sub">연간 EBITDA(막대) · 누적 현금(선) · 단위 억원</p>
         <div class="legend"><span><i style="background:var(--c1)"></i>EBITDA</span><span><i style="background:var(--c2)"></i>누적 현금</span></div>
@@ -281,8 +288,8 @@ function renderUnit(R){
   ).join('') + `<div class="wf-row"><div class="wl">투자회수(설치비 ${won(ST.capex)})</div><div style="font-size:12px;color:var(--muted)">＝ ${R.payback===Infinity?'불가':R.payback.toFixed(2)+'년'}</div><div></div></div>`;
 }
 function renderPNL(R){
-  const h=`<thead><tr><th>연차</th><th>설치</th><th>인입비</th><th>접수마진</th><th>2단DOOH</th><th>총매출</th><th>약국배분</th><th>운영비</th><th>본사비</th><th>EBITDA</th><th>누적현금</th></tr></thead>`;
-  const b=R.rows.map(r=>`<tr><td class="lbl">${r.y}년</td><td class="num">${r.inst.toLocaleString()}</td><td class="num">${won(r.leadG)}</td><td class="num">${won(r.marginG)}</td><td class="num">${r.extG?won(r.extG):'–'}</td><td class="num">${won(r.gross)}</td><td class="num">${won(r.payout)}</td><td class="num">${won(r.opex)}</td><td class="num">${won(r.sga)}</td><td class="num ${r.ebitda>=0?'cell-pos':'cell-neg'}">${won(r.ebitda)}</td><td class="num ${r.cum>=0?'cell-pos':'cell-neg'}">${won(r.cum)}</td></tr>`).join('');
+  const h=`<thead><tr><th>연차</th><th>설치</th><th>인입비</th><th>접수마진</th><th>2단DOOH</th><th>총매출</th><th>약국배분</th><th>운영비</th><th>본사비</th><th>설비투자</th><th>EBITDA</th><th>누적현금</th></tr></thead>`;
+  const b=R.rows.map(r=>`<tr><td class="lbl">${r.y}년</td><td class="num">${r.inst.toLocaleString()}</td><td class="num">${won(r.leadG)}</td><td class="num">${won(r.marginG)}</td><td class="num">${r.extG?won(r.extG):'–'}</td><td class="num">${won(r.gross)}</td><td class="num">${won(r.payout)}</td><td class="num">${won(r.opex)}</td><td class="num">${won(r.sga)}</td><td class="num">${won(r.capex)}</td><td class="num ${r.ebitda>=0?'cell-pos':'cell-neg'}">${won(r.ebitda)}</td><td class="num ${r.cum>=0?'cell-pos':'cell-neg'}">${won(r.cum)}</td></tr>`).join('');
   document.getElementById('pnl').innerHTML=h+'<tbody>'+b+'</tbody>';
 }
 // charts
@@ -310,6 +317,26 @@ function renderStack(R){
     const t=E('text',{x:x(i),y:H-13,'text-anchor':'middle','font-size':11,fill:muted});t.textContent=(i+1)+'년';s.appendChild(t);
   });
 }
+function renderCost(R){
+  const s=document.getElementById('cost');s.innerHTML='';
+  const W=720,H=280,mL=48,mR=14,mT=16,mB=36,iw=W-mL-mR,ih=H-mT-mB;
+  const capex=R.rows.map(r=>eok(r.capex)), pay=R.rows.map(r=>eok(r.payout)), op=R.rows.map(r=>eok(r.opex)), sg=R.rows.map(r=>eok(r.sga));
+  const tot=R.rows.map((r,i)=>capex[i]+pay[i]+op[i]+sg[i]); const hi=Math.max(...tot)*1.15||1;
+  const x=i=>mL+iw*(i+0.5)/5, y=v=>mT+ih*(1-v/hi);
+  const grid=css('--border'),muted=css('--muted');
+  for(let g=0;g<=4;g++){const v=hi*g/4;s.appendChild(E('line',{x1:mL,y1:y(v),x2:W-mR,y2:y(v),stroke:grid,'stroke-width':1}));const t=E('text',{x:mL-7,y:y(v)+4,'text-anchor':'end','font-size':11,fill:muted});t.textContent=Math.round(v);s.appendChild(t);}
+  const bw=iw/5*0.46;
+  const seg=(i,val,base,color,name)=>{if(val<=0.02)return;const r=E('rect',{x:x(i)-bw/2,y:y(base+val),width:bw,height:Math.max(ih*val/hi,1),rx:3,fill:color});
+    r.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년 ${name}</b> ${won(R.rows[i][({설비투자:'capex',약국배분:'payout',스크린운영비:'opex',본사고정비:'sga'})[name]])}`));r.addEventListener('mouseleave',hd);s.appendChild(r);};
+  capex.forEach((_,i)=>{
+    seg(i,capex[i],0,css('--c4'),'설비투자');
+    seg(i,pay[i],capex[i],css('--c3'),'약국배분');
+    seg(i,op[i],capex[i]+pay[i],css('--c2'),'스크린운영비');
+    seg(i,sg[i],capex[i]+pay[i]+op[i],css('--neg'),'본사고정비');
+    const tl=E('text',{x:x(i),y:y(tot[i])-7,'text-anchor':'middle','font-size':11,fill:css('--ink'),'font-weight':700});tl.textContent=tot[i]<100?tot[i].toFixed(0):Math.round(tot[i]);s.appendChild(tl);
+    const t=E('text',{x:x(i),y:H-13,'text-anchor':'middle','font-size':11,fill:muted});t.textContent=(i+1)+'년';s.appendChild(t);
+  });
+}
 function renderJ(R){
   const s=document.getElementById('jcurve');s.innerHTML='';
   const W=720,H=300,mL=52,mR=14,mT=16,mB=34,iw=W-mL-mR,ih=H-mT-mB;
@@ -331,7 +358,7 @@ function renderJ(R){
     c.addEventListener('mousemove',e=>showTT(e,`<b>${i+1}년 누적</b> ${won(R.rows[i].cum)}`));c.addEventListener('mouseleave',hd);s.appendChild(c);
     const t=E('text',{x:x(i),y:y(v)-9,'text-anchor':'middle','font-size':10.5,fill:css('--c2'),'font-weight':700});t.textContent=(v>=0?'+':'')+v.toFixed(0);s.appendChild(t);});
 }
-function draw(){const R=compute();renderKPI(R);renderUnit(R);renderStack(R);renderJ(R);renderPNL(R);}
+function draw(){const R=compute();renderKPI(R);renderUnit(R);renderStack(R);renderCost(R);renderJ(R);renderPNL(R);}
 // ---------- CONTROLS ----------
 function pillGroup(id,key,cast){document.querySelectorAll('#'+id+' .pill').forEach(p=>p.addEventListener('click',()=>{
   document.querySelectorAll('#'+id+' .pill').forEach(q=>q.classList.remove('on'));p.classList.add('on');
