@@ -1,0 +1,243 @@
+<title>약국 사이니지 사업 — 팀 실행 로드맵</title>
+<style>
+  :root{
+    --bg:#FBFAF7;--surface:#FFFFFF;--surface2:#F5F3ED;--surface3:#EFEDE4;
+    --ink:#17211D;--ink2:#48534D;--muted:#8A938C;--border:#E6E2D7;--border2:#D8D3C5;
+    --accent:#0A8F70;--accent-deep:#086F56;--accent-soft:#E1F1EC;
+    --pos:#0A8F70;--neg:#C0533B;--warn:#C77C1E;
+    --c1:#0AA07C;--c2:#2F6FB0;--c3:#E08A1E;--c4:#B0417F;
+    --shadow:0 1px 2px rgba(30,40,35,.04),0 8px 24px -12px rgba(30,40,35,.14);
+    --maxw:940px;
+  }
+  @media (prefers-color-scheme:dark){:root{
+    --bg:#14171A;--surface:#1B1F22;--surface2:#23282B;--surface3:#2B3134;
+    --ink:#ECEFEC;--ink2:#A9B2AC;--muted:#727B76;--border:#2C3236;--border2:#39403F;
+    --accent:#22B892;--accent-deep:#39C9A5;--accent-soft:#173029;
+    --pos:#33C39C;--neg:#D97155;--warn:#DDA04A;--c1:#14876C;--c2:#3D77B0;--c3:#B5741C;--c4:#A44D7C;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.5);}}
+  :root[data-theme="dark"]{--bg:#14171A;--surface:#1B1F22;--surface2:#23282B;--surface3:#2B3134;--ink:#ECEFEC;--ink2:#A9B2AC;--muted:#727B76;--border:#2C3236;--border2:#39403F;--accent:#22B892;--accent-deep:#39C9A5;--accent-soft:#173029;--pos:#33C39C;--neg:#D97155;--warn:#DDA04A;--c1:#14876C;--c2:#3D77B0;--c3:#B5741C;--c4:#A44D7C;--shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.5);}
+  :root[data-theme="light"]{--bg:#FBFAF7;--surface:#FFFFFF;--surface2:#F5F3ED;--surface3:#EFEDE4;--ink:#17211D;--ink2:#48534D;--muted:#8A938C;--border:#E6E2D7;--border2:#D8D3C5;--accent:#0A8F70;--accent-deep:#086F56;--accent-soft:#E1F1EC;--pos:#0A8F70;--neg:#C0533B;--warn:#C77C1E;--c1:#0AA07C;--c2:#2F6FB0;--c3:#E08A1E;--c4:#B0417F;--shadow:0 1px 2px rgba(30,40,35,.04),0 8px 24px -12px rgba(30,40,35,.14);}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Malgun Gothic","Segoe UI",Roboto,sans-serif;line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  h1,h2,h3,h4{text-wrap:balance;line-height:1.25;margin:0}
+  header{padding:56px 0 34px;border-bottom:1px solid var(--border)}
+  .eyebrow{font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);font-weight:700}
+  header h1{font-size:clamp(28px,4.5vw,40px);font-weight:800;letter-spacing:-.02em;margin:12px 0 10px}
+  header p{font-size:17px;color:var(--ink2);max-width:64ch;margin:0}
+  section{padding:38px 0;border-bottom:1px solid var(--border)}
+  h2.sec{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);font-weight:700;margin-bottom:6px}
+  h3.title{font-size:24px;font-weight:800;letter-spacing:-.015em;margin-bottom:14px}
+  p.body{font-size:15.5px;color:var(--ink2);max-width:68ch;margin:0 0 12px}
+  p.body strong{color:var(--ink);font-weight:700}
+  .north{display:flex;gap:18px;align-items:flex-start;margin:22px 0 4px;padding:22px 24px;background:linear-gradient(180deg,var(--accent-soft),transparent 150%);border:1px solid var(--border);border-left:4px solid var(--accent);border-radius:14px;box-shadow:var(--shadow)}
+  .north .big{flex:none;font-size:34px;line-height:1}
+  .north h4{font-size:18px;margin-bottom:6px}
+  .north p{margin:0;color:var(--ink2);font-size:15px}
+  .north b{color:var(--ink)}
+  /* phases */
+  .phase{display:grid;grid-template-columns:64px 1fr;gap:18px;margin:16px 0;padding:20px;background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+  .phase .pn{width:52px;height:52px;border-radius:13px;background:var(--accent-soft);color:var(--accent-deep);font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center}
+  .phase.gate .pn{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+  .phase h4{font-size:18px;margin-bottom:2px}
+  .phase .when{font-size:12.5px;color:var(--muted);font-weight:600;margin-bottom:10px}
+  .tasks{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px}
+  @media(max-width:640px){.tasks{grid-template-columns:1fr}.phase{grid-template-columns:1fr}}
+  .tasks .grp{font-size:12px;font-weight:700;color:var(--accent-deep);margin:6px 0 2px;letter-spacing:.02em}
+  .tasks ul{list-style:none;margin:0;padding:0}
+  .tasks li{position:relative;padding:4px 0 4px 18px;font-size:13.5px;color:var(--ink2)}
+  .tasks li::before{content:"";position:absolute;left:2px;top:11px;width:6px;height:6px;border-radius:50%;background:var(--accent)}
+  .tasks li b{color:var(--ink)}
+  .gatebox{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:6px}
+  @media(max-width:640px){.gatebox{grid-template-columns:1fr}}
+  .gc{border-radius:11px;padding:13px 15px;font-size:13.5px;border:1px solid var(--border)}
+  .gc.go{background:var(--accent-soft);border-color:var(--accent)}
+  .gc.adj{background:color-mix(in srgb,var(--warn) 12%,transparent)}
+  .gc.no{background:color-mix(in srgb,var(--neg) 10%,transparent)}
+  .gc .t{font-weight:800;font-size:14px;margin-bottom:4px}
+  .gc.go .t{color:var(--accent-deep)} .gc.adj .t{color:var(--warn)} .gc.no .t{color:var(--neg)}
+  .gc b{color:var(--ink)}
+  /* this week */
+  .week{background:var(--surface);border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;margin-top:6px}
+  .week .wk{display:flex;gap:14px;align-items:flex-start;padding:15px 20px;border-bottom:1px solid var(--border)}
+  .week .wk:last-child{border-bottom:0}
+  .week .n{flex:none;width:26px;height:26px;border-radius:8px;background:var(--accent);color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center;margin-top:1px}
+  .week .wc b{color:var(--ink);font-weight:700}
+  .week .wc{font-size:14.5px;color:var(--ink2)}
+  .week .who{font-size:12px;color:var(--muted);margin-top:2px}
+  .roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:6px}
+  .role{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:14px 16px}
+  .role h5{margin:0 0 5px;font-size:14px;color:var(--ink)}
+  .role p{margin:0;font-size:12.5px;color:var(--ink2)}
+  .callout{background:var(--surface2);border:1px solid var(--border);border-radius:12px;padding:15px 17px;font-size:14px;color:var(--ink2);margin:14px 0}
+  .callout b{color:var(--ink)}
+  .theme-toggle{position:fixed;top:14px;right:14px;z-index:30;background:var(--surface);border:1px solid var(--border);color:var(--ink2);border-radius:9px;padding:7px 11px;font-size:12px;cursor:pointer;box-shadow:var(--shadow)}
+  footer{padding:34px 0 64px;color:var(--muted);font-size:12.5px}
+  footer a{color:var(--accent-deep)}
+</style>
+
+<button class="theme-toggle" onclick="var r=document.documentElement,c=r.getAttribute('data-theme')||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');r.setAttribute('data-theme',c==='dark'?'light':'dark')">◐ 테마</button>
+
+<header>
+  <div class="wrap">
+    <div class="eyebrow">약국 사이니지 광고매체 사업 · 팀 실행 로드맵</div>
+    <h1>지금부터 우리 팀이<br>해야 할 일</h1>
+    <p>분석은 끝났습니다. 이제 큰 자본을 태우기 전에, 단 하나의 숫자를 실측하는 파일럿으로 사업을 증명합니다.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section>
+    <h2 class="sec">North Star — 단 하나의 질문</h2>
+    <div class="north">
+      <div class="big">🎯</div>
+      <div>
+        <h4>“약국 스크린 1대가 월에 인터넷 가입 인입을 몇 건 만드는가?”</h4>
+        <p>사업의 모든 것이 이 숫자에 달려 있습니다. 모델상 <b>손익분기는 스크린당 월 2.5건</b>(방문객의 0.05%)뿐입니다. 이 문턱을 넘는지는 책상이 아니라 <b>2~3개월 파일럿 실측</b>으로만 답이 나옵니다. 우리의 첫 목표는 사업 확장이 아니라 <b>이 숫자를 확인하는 것</b>입니다.</p>
+      </div>
+    </div>
+    <div class="callout">전략 요약: <b>1단(인터넷가입 성과광고)</b>이 코어 — 회수 흑자를 만드는 엔진. <b>2단(외부 브랜드광고)</b>은 규모 도달 후 상방(벤치마크상 저마진이라 의존 금지). <b>약국 배분은 월 5만 정액</b>으로 규율(경쟁사 포커스미디어는 자리값 급등으로 적자).</div>
+  </section>
+
+  <section>
+    <h2 class="sec">Phases — 단계별 실행</h2>
+    <h3 class="title">4단계 + 의사결정 게이트</h3>
+
+    <div class="phase">
+      <div><div class="pn">0</div></div>
+      <div>
+        <h4>준비</h4>
+        <div class="when">~2–4주 · 파일럿을 쏠 준비를 갖춘다</div>
+        <div class="tasks">
+          <div>
+            <div class="grp">① 광고·전환 (가장 중요)</div>
+            <ul>
+              <li><b>인터넷가입 광고 크리에이티브</b> 제작 (약국 대기화면 최적)</li>
+              <li><b>인입 경로</b> 설계: 전화번호·QR·이벤트 코드</li>
+              <li><b>전환(콜센터) 프로세스</b> 연결 (기존 인프라 활용)</li>
+              <li><b>스크린별 리드 트래킹</b> 시스템 — 측정이 핵심</li>
+            </ul>
+            <div class="grp">② 하드웨어·설치</div>
+            <ul>
+              <li>디스플레이 사양 확정(43″급) + 미디어플레이어/CMS</li>
+              <li>설치 벤더 <b>실견적</b> → 실제 설치비 확정</li>
+            </ul>
+          </div>
+          <div>
+            <div class="grp">③ 약국 영업</div>
+            <ul>
+              <li>파일럿 약국 <b>50–100곳</b> 섭외 (서울·경기 밀집지)</li>
+              <li><b>표준 계약서</b>: 월 5만 정액 배분, 설치 동의</li>
+              <li>입지 다양성 확보(대형/동네/병원가) — 편차 측정용</li>
+            </ul>
+            <div class="grp">④ 법무·규제</div>
+            <ul>
+              <li>인터넷가입 광고 소재 컴플라이언스 검토</li>
+              <li>옥외광고물법·약사법·개인정보(리드) 처리방침</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div><div class="pn">1</div></div>
+      <div>
+        <h4>파일럿 실행 &amp; 측정</h4>
+        <div class="when">2–3개월 · 50–100개 약국</div>
+        <div class="tasks">
+          <div><ul>
+            <li>자체 인터넷가입 광고 <b>송출 시작</b> (첫날부터 100% 가동)</li>
+            <li><b>측정 ①</b> 스크린당 월 인입 건수</li>
+            <li><b>측정 ②</b> 인입→접수 성공율(%)</li>
+          </ul></div>
+          <div><ul>
+            <li><b>측정 ③</b> 접수당 실제 회사 마진</li>
+            <li>약국 입지·유동인구별 <b>편차 분석</b></li>
+            <li>크리에이티브·버티컬 <b>A/B</b> (인터넷가입 vs 건기식 리드)</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase gate">
+      <div><div class="pn">✓</div></div>
+      <div>
+        <h4>Go / No-Go 게이트</h4>
+        <div class="when">파일럿 종료 시 · 데이터로 결정</div>
+        <div class="gatebox">
+          <div class="gc go"><div class="t">GO · 확장</div>월 인입 <b>≥ 4건</b> &amp; 성공율 <b>≥ 15%</b> &amp; 유닛 흑자 → 공격적 확장</div>
+          <div class="gc adj"><div class="t">조정 · 재측정</div>월 인입 <b>2–4건</b> → 크리에이티브·입지 최적화 후 재측정</div>
+          <div class="gc no"><div class="t">중단 · 피벗</div>월 인입 <b>&lt; 2건</b> 지속 → 매체 대신 다른 모델 검토</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div><div class="pn">2</div></div>
+      <div>
+        <h4>확장 (Go일 때)</h4>
+        <div class="when">6–18개월 · 목표 3,000개+</div>
+        <div class="tasks">
+          <div><ul>
+            <li><b>설치 표준화·자동화</b> — 설치속도가 최대 가치동인</li>
+            <li>약국 영업 조직 확대 (BD팀)</li>
+          </ul></div>
+          <div><ul>
+            <li>단계적 <b>자금 유치</b>: 파일럿 데이터로 초기 5–15억</li>
+            <li><b>회수현금 재투자</b> 루프 (유닛 흑자라 자력 성장 가능)</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="phase">
+      <div><div class="pn">3</div></div>
+      <div>
+        <h4>2단 점화 (규모 도달 후)</h4>
+        <div class="when">2,000–3,000개 도달 후</div>
+        <div class="tasks">
+          <div><ul>
+            <li>외부 광고주(건기식·제약) 영업 개시</li>
+            <li>구글·네이버 <b>프로그래매틱 DOOH</b> 연동</li>
+          </ul></div>
+          <div><ul>
+            <li>단, 브랜드 DOOH는 저마진(~8만) → <b>상방으로만</b></li>
+            <li>전국 헬스 매체망 <b>협상력</b>으로 단가 확보</li>
+          </ul></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">This Week — 이번 주 당장 착수</h2>
+    <h3 class="title">가장 먼저 움직일 5가지</h3>
+    <div class="week">
+      <div class="wk"><div class="n">1</div><div class="wc"><b>파일럿 약국 리스트업</b> — 서울·경기 밀집지에서 후보 100곳 접촉 시작<div class="who">담당: 약국 영업</div></div></div>
+      <div class="wk"><div class="n">2</div><div class="wc"><b>디스플레이·설치 실견적</b> 3곳 이상 받기 → 실제 설치비 확정<div class="who">담당: 하드웨어/운영</div></div></div>
+      <div class="wk"><div class="n">3</div><div class="wc"><b>인터넷가입 광고 크리에이티브 1차안</b> + 인입 경로(전화/QR) 확정<div class="who">담당: 광고/마케팅</div></div></div>
+      <div class="wk"><div class="n">4</div><div class="wc"><b>스크린별 리드 트래킹 방식</b> 설계 (약국별 코드·번호 분리)<div class="who">담당: 광고/기술</div></div></div>
+      <div class="wk"><div class="n">5</div><div class="wc"><b>표준 약국 계약서</b>(월 5만 정액) + 규제 체크리스트 초안<div class="who">담당: 법무/재무</div></div></div>
+    </div>
+  </section>
+
+  <section>
+    <h2 class="sec">Team — 역할 분담</h2>
+    <h3 class="title">누가 무엇을 책임지나</h3>
+    <div class="roles">
+      <div class="role"><h5>📣 광고·전환 리드</h5><p>크리에이티브·인입경로·콜센터 연결·리드 트래킹. <b>파일럿 성패의 핵심.</b></p></div>
+      <div class="role"><h5>🏪 약국 영업(BD)</h5><p>약국 섭외·계약·관계관리. 확장기 최대 병목.</p></div>
+      <div class="role"><h5>🔧 하드웨어·운영</h5><p>디스플레이·설치·통신·CMS·유지보수 벤더 관리.</p></div>
+      <div class="role"><h5>💼 재무·법무</h5><p>계약 표준화·규제·자금계획·유닛경제 추적(시뮬레이터).</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap" style="padding:0">
+      <p>연동 자료 · <a href="https://claude.ai/code/artifact/0286e904-d1b9-494e-8d75-baa038c9f83c">수익성 시뮬레이터</a> — 파일럿 실측값을 넣어 실시간 사업성 확인. 상세 분석·벤치마크는 저장소 <b>docs/business/pharmacy-signage/</b>.</p>
+      <p style="margin-top:8px">기억할 것: 지금 목표는 <b>확장이 아니라 “스크린당 인입 건수” 하나를 싸고 빠르게 증명</b>하는 것. 그 숫자만 잡으면 나머지는 회수현금으로 굴러갑니다.</p>
+    </div>
+  </footer>
+</div>
